@@ -10,3 +10,14 @@ services:
       - "3000:3000"
     environment:
       PORT: "3000"
+  db:
+    image: couchdb
+    environment:
+      COUCHDB_USER: admin
+      COUCHDB_PASSWORD: password
+    volumes:
+      - "db_volume:/opt/couchdb/data"
+    ports:
+      - "3002:5984"
+volumes:
+  db_volume:
