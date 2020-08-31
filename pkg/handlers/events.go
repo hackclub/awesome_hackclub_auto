@@ -40,7 +40,7 @@ func HandleEvents(w http.ResponseWriter, r *http.Request) {
 		innerEvent := eventsAPIEvent.InnerEvent
 		switch ev := innerEvent.Data.(type) {
 		case *slackevents.ReactionAddedEvent:
-			fmt.Printf("Reaction added by user %s", ev.User)
+			logoru.Debug(fmt.Sprintf("Reaction added by user %s", ev.User))
 		}
 	}
 }
