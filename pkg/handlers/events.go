@@ -9,6 +9,7 @@ import (
 	"regexp"
 
 	"github.com/Matt-Gleich/logoru"
+	"github.com/hackclub/awesome_hackclub_auto/pkg/block_kit"
 	"github.com/slack-go/slack"
 	"github.com/slack-go/slack/slackevents"
 )
@@ -60,26 +61,43 @@ func HandleEvents(w http.ResponseWriter, r *http.Request) {
 				} else if len(resp.Messages) >= 1 {
 					logoru.Debug(resp.Messages[0].Text)
 
-					re := regexp.MustCompile(`github\.com\/([^\/>]+)\/([^\/>]+)`).FindAllStringSubmatch(resp.Messages[0].Text, -1)
+					re := regexp.MustCompile(`https?:\/\/github\.com\/([^\/>\|]+)\/([^\/>\|]+)`).FindAllStringSubmatch(resp.Messages[0].Text, -1)
 
-					buttonActionID := "submit"
+					var buttonActionID []byte
 
 					if len(re) >= 1 {
-						buttonActionID = fmt.Sprintf("submit,%s,%s", re[0][0], re[0][2])
+						buttonActionID, _ = json.Marshal(block_kit.SlackActionID{
+							Action:      "submit",
+							GitHubURL:   re[0][0],
+							ProjectName: re[0][2],
+							Timestamp:   ev.Item.Timestamp,
+						})
+					} else {
+						buttonActionID, _ = json.Marshal(block_kit.SlackActionID{
+							Action:    "submit",
+							Timestamp: ev.Item.Timestamp,
+						})
+					}
+					permalink, err := client.GetPermalink(&slack.PermalinkParameters{
+						Channel: ev.Item.Channel,
+						Ts:      ev.Item.Timestamp,
+					})
+					if err != nil {
+						logoru.Error(err)
 					}
 
 					_, _, err = client.PostMessage(ev.ItemUser, slack.MsgOptionBlocks(
-						slack.NewSectionBlock(slack.NewTextBlockObject("mrkdwn", "Howdy! :wave: I see that you've reacted to one of your messages with :awesome:. You're halfway to getting your project on <https://github.com/hackclub/awesome-hackclub|awesome-hackclub>! :sunglasses: Just click that button down there :arrow_down: to fill in some info and finish your submission! :tada:", false, false), nil, nil),
+						slack.NewSectionBlock(slack.NewTextBlockObject("mrkdwn", fmt.Sprintf("Howdy! :wave: I see that you've reacted to <%s|one of your messages> with :awesome:. You're halfway to getting your project on <https://github.com/hackclub/awesome-hackclub|awesome-hackclub>! :sunglasses: Just click that button down there :arrow_down: to fill in some info and finish your submission! :tada:", permalink), false, false), nil, nil),
 						slack.NewActionBlock(
 							"",
 							slack.NewButtonBlockElement(
-								buttonActionID,
+								string(buttonActionID),
 								"",
 								slack.NewTextBlockObject("plain_text", "Submit", true, false),
 							),
 						),
 						slack.NewContextBlock("", slack.NewTextBlockObject("mrkdwn", "Was this a mistake? No worries! just ignore this message and you'll be fine.", false, false)),
-					))
+					), slack.MsgOptionText("You're halfway to getting your project on <https://github.com/hackclub/awesome-hackclub|awesome-hackclub>! :sunglasses:", false), slack.MsgOptionDisableLinkUnfurl())
 					if err != nil {
 						logoru.Error(err)
 					}
