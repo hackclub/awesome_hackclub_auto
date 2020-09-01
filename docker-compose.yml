@@ -10,6 +10,14 @@ services:
       - "3000:3000"
     environment:
       PORT: "3000"
+    env_file: .env
+  ngrok:
+    image: wernight/ngrok
+    ports:
+      - "3001:4040"
+    environment:
+      NGROK_PORT: main:3000
+    env_file: .ngrok.env
   db:
     image: couchdb
     environment:

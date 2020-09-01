@@ -13,6 +13,7 @@ func main() {
 	r := mux.NewRouter()
 
 	r.HandleFunc("/slack/events", handlers.HandleEvents).Methods("POST")
+	r.HandleFunc("/slack/interactivity", handlers.HandleInteractivity).Methods("POST")
 
 	port := os.Getenv("PORT")
 	if port == "" {
