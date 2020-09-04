@@ -58,3 +58,17 @@ func UpdateProject(newProject Project) {
 		return
 	}
 }
+
+func DeleteProject(project Project) {
+	db, err := kivik.New("couch", "http://admin:password@db:5984/")
+	if err != nil {
+		logoru.Error(err)
+		return
+	}
+
+	_, err = db.DB(context.TODO(), "projects").Delete(context.TODO(), project.ID, project.Rev)
+	if err != nil {
+		logoru.Error(err)
+		return
+	}
+}

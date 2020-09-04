@@ -10,7 +10,7 @@ const (
 
 type Project struct {
 	ID          string        `json:"_id"`
-	Rev         string        `json:"_rev"`
+	Rev         string        `json:"_rev,omitempty"`
 	Status      ProjectStatus `json:"status"`
 	Timestamp   string        `json:"ts"`
 	UserID      string        `json:"user_id"`

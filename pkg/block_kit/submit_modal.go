@@ -5,12 +5,12 @@ import (
 	"github.com/slack-go/slack"
 )
 
-func SubmitModal(intentID string, project db.Project) slack.ModalViewRequest {
+func SubmitModal(metadata string, project db.Project) slack.ModalViewRequest {
 	return slack.ModalViewRequest{
 		CallbackID:      "submit",
 		Type:            "modal",
 		Title:           slack.NewTextBlockObject("plain_text", "Submit", false, false),
-		PrivateMetadata: intentID,
+		PrivateMetadata: metadata,
 		Blocks: slack.Blocks{
 			BlockSet: []slack.Block{
 				slack.InputBlock{
