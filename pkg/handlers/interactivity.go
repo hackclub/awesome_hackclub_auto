@@ -34,37 +34,44 @@ func HandleInteractivity(w http.ResponseWriter, r *http.Request) {
 
 	switch parsed.Type {
 	case slack.InteractionTypeBlockActions:
-		action := block_kit.SlackActionID{}
-		json.Unmarshal([]byte(parsed.ActionCallback.BlockActions[0].ActionID), &action)
-
-		if action.Action == "submit" {
+		actionID := parsed.ActionCallback.BlockActions[0].ActionID
+		if actionID == "submit" {
 			client := slack.New(os.Getenv("SLACK_TOKEN"))
-			if db.ProjectIsInQueue(action.Timestamp) {
+
+			project := db.GetProject(parsed.ActionCallback.BlockActions[0].Value)
+
+			switch project.Status {
+			case db.ProjectStatusQueue:
 				_, err := client.OpenView(parsed.TriggerID, block_kit.AlreadyInQueue())
 				if err != nil {
 					logoru.Error(err)
 				}
 				return
+			case db.ProjectStatusIntent:
+				_, err := client.OpenView(parsed.TriggerID, block_kit.SubmitModal(parsed.ActionCallback.BlockActions[0].Value, project))
+				if err != nil {
+					logoru.Error(err)
+				}
+			case db.ProjectStatusProject:
+				// TODO
 			}
-			_, err := client.OpenView(parsed.TriggerID, block_kit.SubmitModal(block_kit.SlackPrivateMetadata{
-				Timestamp: action.Timestamp,
-			}, action))
-			if err != nil {
-				logoru.Error(err)
-			}
+		} else if actionID == "accept" {
+			logoru.Debug("Approve project ", parsed.ActionCallback.BlockActions[0].Value)
+		} else if actionID == "deny" {
+			logoru.Debug("Deny project ", parsed.ActionCallback.BlockActions[0].Value)
 		}
 	case slack.InteractionTypeViewSubmission:
 		values := parsed.View.State.Values
 
-		metadata := block_kit.SlackPrivateMetadata{}
-		json.Unmarshal([]byte(parsed.View.PrivateMetadata), &metadata)
+		project := db.GetProject(parsed.View.PrivateMetadata)
 
-		util.AddProjectToQueue(db.Project{
-			Timestamp:   metadata.Timestamp,
-			Name:        values["name"]["name"].Value,
-			Description: values["description"]["description"].Value,
-			GitHubURL:   values["url"]["url"].Value,
-			UserID:      parsed.User.ID,
-		})
+		project.Status = db.ProjectStatusQueue
+
+		project.Description = values["description"]["description"].Value
+		project.Name = values["name"]["name"].Value
+		project.GitHubURL = values["url"]["url"].Value
+
+		db.UpdateProject(project)
+		util.SendReviewMessage(project)
 	}
 }

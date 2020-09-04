@@ -1,22 +1,16 @@
 package block_kit
 
 import (
-	"encoding/json"
-
-	"github.com/Matt-Gleich/logoru"
+	"github.com/hackclub/awesome_hackclub_auto/pkg/db"
 	"github.com/slack-go/slack"
 )
 
-func SubmitModal(privateMetadata interface{}, action SlackActionID) slack.ModalViewRequest {
-	privateMetadataJson, err := json.Marshal(privateMetadata)
-	if err != nil {
-		logoru.Error(err)
-	}
+func SubmitModal(intentID string, project db.Project) slack.ModalViewRequest {
 	return slack.ModalViewRequest{
 		CallbackID:      "submit",
 		Type:            "modal",
 		Title:           slack.NewTextBlockObject("plain_text", "Submit", false, false),
-		PrivateMetadata: string(privateMetadataJson),
+		PrivateMetadata: intentID,
 		Blocks: slack.Blocks{
 			BlockSet: []slack.Block{
 				slack.InputBlock{
@@ -26,7 +20,7 @@ func SubmitModal(privateMetadata interface{}, action SlackActionID) slack.ModalV
 					Element: slack.PlainTextInputBlockElement{
 						Type:         "plain_text_input",
 						ActionID:     "url",
-						InitialValue: action.GitHubURL,
+						InitialValue: project.GitHubURL,
 					},
 				},
 				slack.InputBlock{
@@ -36,7 +30,7 @@ func SubmitModal(privateMetadata interface{}, action SlackActionID) slack.ModalV
 					Element: slack.PlainTextInputBlockElement{
 						Type:         "plain_text_input",
 						ActionID:     "name",
-						InitialValue: action.ProjectName,
+						InitialValue: project.Name,
 					},
 				},
 				slack.InputBlock{

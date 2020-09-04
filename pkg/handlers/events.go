@@ -9,7 +9,7 @@ import (
 	"regexp"
 
 	"github.com/Matt-Gleich/logoru"
-	"github.com/hackclub/awesome_hackclub_auto/pkg/block_kit"
+	"github.com/hackclub/awesome_hackclub_auto/pkg/db"
 	"github.com/slack-go/slack"
 	"github.com/slack-go/slack/slackevents"
 )
@@ -63,20 +63,20 @@ func HandleEvents(w http.ResponseWriter, r *http.Request) {
 
 					re := regexp.MustCompile(`https?:\/\/github\.com\/([^\/>\|]+)\/([^\/>\|]+)`).FindAllStringSubmatch(resp.Messages[0].Text, -1)
 
-					var buttonActionID []byte
+					var projectIntent db.Project
 
 					if len(re) >= 1 {
-						buttonActionID, _ = json.Marshal(block_kit.SlackActionID{
-							Action:      "submit",
-							GitHubURL:   re[0][0],
-							ProjectName: re[0][2],
-							Timestamp:   ev.Item.Timestamp,
-						})
-					} else {
-						buttonActionID, _ = json.Marshal(block_kit.SlackActionID{
-							Action:    "submit",
+						projectIntent = db.Project{
+							GitHubURL: re[0][0],
+							Name:      re[0][2],
+							UserID:    ev.User,
 							Timestamp: ev.Item.Timestamp,
-						})
+						}
+					} else {
+						projectIntent = db.Project{
+							UserID:    ev.User,
+							Timestamp: ev.Item.Timestamp,
+						}
 					}
 					permalink, err := client.GetPermalink(&slack.PermalinkParameters{
 						Channel: ev.Item.Channel,
@@ -86,13 +86,15 @@ func HandleEvents(w http.ResponseWriter, r *http.Request) {
 						logoru.Error(err)
 					}
 
+					intentID := db.CreateProjectIntent(projectIntent)
+
 					_, _, err = client.PostMessage(ev.ItemUser, slack.MsgOptionBlocks(
 						slack.NewSectionBlock(slack.NewTextBlockObject("mrkdwn", fmt.Sprintf("Howdy! :wave: I see that you've reacted to <%s|one of your messages> with :awesome:. You're halfway to getting your project on <https://github.com/hackclub/awesome-hackclub|awesome-hackclub>! :sunglasses: Just click that button down there :arrow_down: to fill in some info and finish your submission! :tada:", permalink), false, false), nil, nil),
 						slack.NewActionBlock(
 							"",
 							slack.NewButtonBlockElement(
-								string(buttonActionID),
-								"",
+								"submit",
+								intentID,
 								slack.NewTextBlockObject("plain_text", "Submit", true, false),
 							),
 						),
