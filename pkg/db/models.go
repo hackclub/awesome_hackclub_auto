@@ -17,4 +17,6 @@ type Project struct {
 	Name        string        `json:"name"`
 	GitHubURL   string        `json:"github_url"`
 	Description string        `json:"description"`
+	Language    string        `json:"language"`
+	Category    string        `json:"category"`
 }

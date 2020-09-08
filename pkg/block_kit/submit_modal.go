@@ -1,15 +1,54 @@
 package block_kit
 
 import (
+	"github.com/hackclub/awesome_hackclub_auto/pkg/config"
 	"github.com/hackclub/awesome_hackclub_auto/pkg/db"
 	"github.com/slack-go/slack"
 )
 
 func SubmitModal(metadata string, project db.Project) slack.ModalViewRequest {
+	// Category stuff
+
+	categoryOptions := []*slack.OptionBlockObject{}
+
+	for _, category := range config.Categories {
+		categoryOptions = append(categoryOptions, &slack.OptionBlockObject{
+			Text:  slack.NewTextBlockObject("plain_text", category, false, false),
+			Value: category,
+		})
+	}
+
+	var initialCategory *slack.OptionBlockObject = nil
+	if project.Category != "" {
+		initialCategory = &slack.OptionBlockObject{
+			Text:  slack.NewTextBlockObject("plain_text", project.Category, false, false),
+			Value: project.Category,
+		}
+	}
+
+	// Language stuff
+
+	languageOptions := []*slack.OptionBlockObject{}
+
+	for _, language := range config.Languages {
+		languageOptions = append(languageOptions, &slack.OptionBlockObject{
+			Text:  slack.NewTextBlockObject("plain_text", language, false, false),
+			Value: language,
+		})
+	}
+
+	var initialLanguage *slack.OptionBlockObject = nil
+	if project.Language != "" {
+		initialLanguage = &slack.OptionBlockObject{
+			Text:  slack.NewTextBlockObject("plain_text", project.Language, false, false),
+			Value: project.Language,
+		}
+	}
+
 	return slack.ModalViewRequest{
 		CallbackID:      "submit",
 		Type:            "modal",
-		Title:           slack.NewTextBlockObject("plain_text", "Submit", false, false),
+		Title:           slack.NewTextBlockObject("plain_text", "Submit Project", false, false),
 		PrivateMetadata: metadata,
 		Blocks: slack.Blocks{
 			BlockSet: []slack.Block{
@@ -42,6 +81,30 @@ func SubmitModal(metadata string, project db.Project) slack.ModalViewRequest {
 						Type:      "plain_text_input",
 						ActionID:  "description",
 						Multiline: true,
+					},
+				},
+				slack.InputBlock{
+					Type:    "input",
+					Label:   slack.NewTextBlockObject("plain_text", "Category", false, false),
+					BlockID: "category",
+					Element: slack.SelectBlockElement{
+						Type:          "static_select",
+						Placeholder:   slack.NewTextBlockObject("plain_text", "Select one...", false, false),
+						ActionID:      "category",
+						Options:       categoryOptions,
+						InitialOption: initialCategory,
+					},
+				},
+				slack.InputBlock{
+					Type:    "input",
+					Label:   slack.NewTextBlockObject("plain_text", "Language", false, false),
+					BlockID: "language",
+					Element: slack.SelectBlockElement{
+						Type:          "static_select",
+						Placeholder:   slack.NewTextBlockObject("plain_text", "Select one...", false, false),
+						ActionID:      "language",
+						Options:       languageOptions,
+						InitialOption: initialLanguage,
 					},
 				},
 			},
