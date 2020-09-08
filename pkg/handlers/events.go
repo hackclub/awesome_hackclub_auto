@@ -6,10 +6,10 @@ import (
 	"fmt"
 	"net/http"
 	"os"
-	"regexp"
 
 	"github.com/Matt-Gleich/logoru"
 	"github.com/hackclub/awesome_hackclub_auto/pkg/db"
+	"github.com/hackclub/awesome_hackclub_auto/pkg/util"
 	"github.com/slack-go/slack"
 	"github.com/slack-go/slack/slackevents"
 )
@@ -61,23 +61,11 @@ func HandleEvents(w http.ResponseWriter, r *http.Request) {
 				} else if len(resp.Messages) >= 1 {
 					logoru.Debug(resp.Messages[0].Text)
 
-					re := regexp.MustCompile(`https?:\/\/github\.com\/([^\/>\|]+)\/([^\/>\|]+)`).FindAllStringSubmatch(resp.Messages[0].Text, -1)
+					projectIntent := util.GenerateProjectIntent(resp.Messages[0].Text)
 
-					var projectIntent db.Project
+					projectIntent.UserID = ev.User
+					projectIntent.Timestamp = ev.Item.Timestamp
 
-					if len(re) >= 1 {
-						projectIntent = db.Project{
-							GitHubURL: re[0][0],
-							Name:      re[0][2],
-							UserID:    ev.User,
-							Timestamp: ev.Item.Timestamp,
-						}
-					} else {
-						projectIntent = db.Project{
-							UserID:    ev.User,
-							Timestamp: ev.Item.Timestamp,
-						}
-					}
 					permalink, err := client.GetPermalink(&slack.PermalinkParameters{
 						Channel: ev.Item.Channel,
 						Ts:      ev.Item.Timestamp,

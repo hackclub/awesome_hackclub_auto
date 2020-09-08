@@ -1,10 +1,10 @@
 [
-  "Slack apps/bots",
+  "CLI tools",
+  "Desktop apps",
+  "Developer utilities",
   "Discord bots",
   "GitHub Actions",
-  "Web apps",
-  "CLI tools",
   "Mobile apps",
-  "Desktop apps",
-  "Articles"
+  "Slack apps/bots",
+  "Web apps"
 ]

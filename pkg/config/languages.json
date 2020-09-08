@@ -1,15 +1,16 @@
 [
   "Go",
-  "JavaScript/TypeScript",
+  "JavaScript",
+  "TypeScript",
   "Python",
   "Rust",
   "Dart",
   "Ruby",
   "Java",
   "PHP",
-  "C/C++",
+  "C",
+  "C++",
   "C#",
-  "HTML/CSS",
-  "Swift",
-  "English"
+  "HTML",
+  "Swift"
 ]

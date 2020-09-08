@@ -129,12 +129,14 @@ func HandleInteractivity(w http.ResponseWriter, r *http.Request) {
 			project.Description = values["description"]["description"].Value
 			project.Name = values["name"]["name"].Value
 			project.GitHubURL = values["url"]["url"].Value
+			project.Category = values["category"]["category"].SelectedOption.Value
+			project.Language = values["language"]["language"].SelectedOption.Value
 
 			client := slack.New(os.Getenv("SLACK_TOKEN"))
 
 			db.UpdateProject(project)
 			_, _, _, err := client.UpdateMessage(metadata.Channel, metadata.TS, slack.MsgOptionBlocks(
-				slack.NewSectionBlock(slack.NewTextBlockObject("mrkdwn", fmt.Sprintf("Your project, *%s*, has successfully been submitted! :tada:", project.Name), false, false), nil, nil),
+				slack.NewSectionBlock(slack.NewTextBlockObject("mrkdwn", fmt.Sprintf("Your project, *%s*, has successfully been submitted! :tada: You'll get another DM once it's been added.", project.Name), false, false), nil, nil),
 			))
 			if err != nil {
 				logoru.Error(err)
