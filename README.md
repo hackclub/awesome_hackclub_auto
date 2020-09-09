@@ -6,6 +6,18 @@
 
 After installing [Docker](https://docker.com) and [Docker Compose](https://docs.docker.com/compose), run `docker-compose up` in your favorite terminal.
 
+### Environment variables
+
+Create a `.env` file, and stick the following env variables in:
+
+```
+SLACK_TOKEN=a slack bot token
+SLACK_SIGNING_SECRET=signing secret, NOT verification token
+REVIEW_CHANNEL=channel ID to post review messages to
+AIRTABLE_API_KEY=airtable api key
+AIRTABLE_BASE_ID=id of the airtable base
+```
+
 ### Commands
 
 | Command                       | Description                                              |
