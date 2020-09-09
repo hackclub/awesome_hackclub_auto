@@ -65,3 +65,16 @@ func DeleteProject(project Project) {
 		logoru.Error(err)
 	}
 }
+
+func GetAllProjects() []Project {
+	table := projectsTable()
+
+	projects := []Project{}
+
+	err := table.List(&projects, &airtable.Options{Filter: "Status = 'project'"})
+	if err != nil {
+		logoru.Error(err)
+	}
+
+	return projects
+}
