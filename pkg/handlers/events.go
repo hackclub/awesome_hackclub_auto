@@ -65,6 +65,7 @@ func HandleEvents(w http.ResponseWriter, r *http.Request) {
 
 					projectIntent.UserID = ev.User
 					projectIntent.Timestamp = ev.Item.Timestamp
+					projectIntent.Channel = ev.Item.Channel
 
 					permalink, err := client.GetPermalink(&slack.PermalinkParameters{
 						Channel: ev.Item.Channel,
