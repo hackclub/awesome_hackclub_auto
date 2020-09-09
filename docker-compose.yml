@@ -18,14 +18,3 @@ services:
     environment:
       NGROK_PORT: main:3000
     env_file: .ngrok.env
-  db:
-    image: couchdb
-    environment:
-      COUCHDB_USER: admin
-      COUCHDB_PASSWORD: password
-    volumes:
-      - "db_volume:/opt/couchdb/data"
-    ports:
-      - "3002:5984"
-volumes:
-  db_volume:

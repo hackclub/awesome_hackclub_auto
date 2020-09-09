@@ -41,7 +41,7 @@ func HandleInteractivity(w http.ResponseWriter, r *http.Request) {
 
 			project := db.GetProject(parsed.ActionCallback.BlockActions[0].Value)
 
-			switch project.Status {
+			switch project.Fields.Status {
 			case db.ProjectStatusQueue:
 				_, err := client.OpenView(parsed.TriggerID, block_kit.AlreadyInQueue())
 				if err != nil {
@@ -58,7 +58,7 @@ func HandleInteractivity(w http.ResponseWriter, r *http.Request) {
 					Channel:   parsed.Channel.ID,
 					TS:        parsed.Message.Timestamp,
 				})
-				_, err := client.OpenView(parsed.TriggerID, block_kit.SubmitModal(string(metadata), project))
+				_, err := client.OpenView(parsed.TriggerID, block_kit.SubmitModal(string(metadata), project.Fields))
 				if err != nil {
 					logoru.Error(err)
 				}
@@ -69,11 +69,11 @@ func HandleInteractivity(w http.ResponseWriter, r *http.Request) {
 			client := slack.New(os.Getenv("SLACK_TOKEN"))
 			project := db.GetProject(parsed.ActionCallback.BlockActions[0].Value)
 
-			project.Status = db.ProjectStatusProject
+			project.Fields.Status = db.ProjectStatusProject
 			db.UpdateProject(project)
 
 			_, _, _, err := client.UpdateMessage(parsed.Channel.ID, parsed.Message.Timestamp, slack.MsgOptionBlocks(
-				slack.NewSectionBlock(slack.NewTextBlockObject("mrkdwn", fmt.Sprintf("*<%s|%s>* was approved by <@%s>", project.GitHubURL, project.Name, parsed.User.ID), false, false), nil, nil),
+				slack.NewSectionBlock(slack.NewTextBlockObject("mrkdwn", fmt.Sprintf("*<%s|%s>* was approved by <@%s>", project.Fields.GitHubURL, project.Fields.Name, parsed.User.ID), false, false), nil, nil),
 			))
 			if err != nil {
 				logoru.Error(err)
@@ -114,6 +114,18 @@ func HandleInteractivity(w http.ResponseWriter, r *http.Request) {
 		values := parsed.View.State.Values
 
 		if parsed.View.CallbackID == "submit" {
+			if !util.IsValidProjectURL(values["url"]["url"].Value) {
+				w.Header().Add("Content-Type", "application/json")
+				resp, _ := json.Marshal(slack.ViewSubmissionResponse{
+					ResponseAction: slack.RAErrors,
+					Errors: map[string]string{
+						"url": "This isn't a valid GitHub URL. It should look like the following: https://github.com/hackclub/hackclub",
+					},
+				})
+
+				w.Write(resp)
+				return
+			}
 			var metadata struct {
 				ProjectID string
 				Channel   string
@@ -124,19 +136,19 @@ func HandleInteractivity(w http.ResponseWriter, r *http.Request) {
 
 			project := db.GetProject(metadata.ProjectID)
 
-			project.Status = db.ProjectStatusQueue
+			project.Fields.Status = db.ProjectStatusQueue
 
-			project.Description = values["description"]["description"].Value
-			project.Name = values["name"]["name"].Value
-			project.GitHubURL = values["url"]["url"].Value
-			project.Category = values["category"]["category"].SelectedOption.Value
-			project.Language = values["language"]["language"].SelectedOption.Value
+			project.Fields.Description = values["description"]["description"].Value
+			project.Fields.Name = values["name"]["name"].Value
+			project.Fields.GitHubURL = values["url"]["url"].Value
+			project.Fields.Category = values["category"]["category"].SelectedOption.Value
+			project.Fields.Language = values["language"]["language"].SelectedOption.Value
 
 			client := slack.New(os.Getenv("SLACK_TOKEN"))
 
 			db.UpdateProject(project)
 			_, _, _, err := client.UpdateMessage(metadata.Channel, metadata.TS, slack.MsgOptionBlocks(
-				slack.NewSectionBlock(slack.NewTextBlockObject("mrkdwn", fmt.Sprintf("Your project, *%s*, has successfully been submitted! :tada: You'll get another DM once it's been added.", project.Name), false, false), nil, nil),
+				slack.NewSectionBlock(slack.NewTextBlockObject("mrkdwn", fmt.Sprintf("Your project, *%s*, has successfully been submitted! :tada: You'll get another DM once it's been added.", project.Fields.Name), false, false), nil, nil),
 			))
 			if err != nil {
 				logoru.Error(err)
@@ -156,7 +168,7 @@ func HandleInteractivity(w http.ResponseWriter, r *http.Request) {
 
 			db.DeleteProject(project)
 			_, _, _, err := client.UpdateMessage(metadata.Channel, metadata.ReviewTS, slack.MsgOptionBlocks(
-				slack.NewSectionBlock(slack.NewTextBlockObject("mrkdwn", fmt.Sprintf("*<%s|%s>* was denied by <@%s>\n*Reason*: %s", project.GitHubURL, project.Name, parsed.User.ID, values["reason"]["reason"].Value), false, false), nil, nil),
+				slack.NewSectionBlock(slack.NewTextBlockObject("mrkdwn", fmt.Sprintf("*<%s|%s>* was denied by <@%s>\n*Reason*: %s", project.Fields.GitHubURL, project.Fields.Name, parsed.User.ID, values["reason"]["reason"].Value), false, false), nil, nil),
 			))
 			if err != nil {
 				logoru.Error(err)
