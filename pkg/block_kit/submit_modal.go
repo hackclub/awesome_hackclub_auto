@@ -6,7 +6,7 @@ import (
 	"github.com/slack-go/slack"
 )
 
-func SubmitModal(metadata string, project db.Project) slack.ModalViewRequest {
+func SubmitModal(metadata string, project db.ProjectFields) slack.ModalViewRequest {
 	// Category stuff
 
 	categoryOptions := []*slack.OptionBlockObject{}
@@ -54,7 +54,7 @@ func SubmitModal(metadata string, project db.Project) slack.ModalViewRequest {
 			BlockSet: []slack.Block{
 				slack.InputBlock{
 					Type:    "input",
-					Label:   slack.NewTextBlockObject("plain_text", "Project GitHub URL", false, false),
+					Label:   slack.NewTextBlockObject("plain_text", "GitHub URL", false, false),
 					BlockID: "url",
 					Element: slack.PlainTextInputBlockElement{
 						Type:         "plain_text_input",

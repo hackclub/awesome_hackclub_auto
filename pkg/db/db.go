@@ -1,74 +1,67 @@
 package db
 
 import (
-	"context"
+	"os"
 
-	_ "github.com/go-kivik/couchdb"
-	"github.com/google/uuid"
+	"github.com/brianloveswords/airtable"
 
 	"github.com/Matt-Gleich/logoru"
-	"github.com/go-kivik/kivik"
 )
 
-func CreateProjectIntent(project Project) string {
-	db, err := kivik.New("couch", "http://admin:password@db:5984/")
-	if err != nil {
-		logoru.Error(err)
-		return ""
+func projectsTable() airtable.Table {
+	client := airtable.Client{
+		APIKey: os.Getenv("AIRTABLE_API_KEY"),
+		BaseID: os.Getenv("AIRTABLE_BASE_ID"),
 	}
 
-	project.ID = uuid.New().String()
-	project.Status = ProjectStatusIntent
+	return client.Table("Projects")
+}
 
-	id, _, err := db.DB(context.TODO(), "projects").CreateDoc(context.TODO(), project)
-	if err != nil {
-		logoru.Error(err)
-		return ""
+func CreateProjectIntent(fields ProjectFields) string {
+	projects := projectsTable()
+
+	fields.Status = ProjectStatusIntent
+	project := Project{
+		Fields: fields,
 	}
 
-	return id
+	err := projects.Create(&project)
+	if err != nil {
+		logoru.Error(err)
+	}
+
+	return project.ID
 }
 
 func GetProject(id string) Project {
-	db, err := kivik.New("couch", "http://admin:password@db:5984/")
+	projects := projectsTable()
+
+	project := Project{}
+	err := projects.Get(id, &project)
+
 	if err != nil {
-		logoru.Error(err)
 		return Project{}
 	}
 
-	row := db.DB(context.TODO(), "projects").Get(context.TODO(), id)
-	project := Project{}
-	err = row.ScanDoc(&project)
-	if err != nil {
-		logoru.Error(err)
-	}
 	return project
 }
 
 func UpdateProject(newProject Project) {
-	db, err := kivik.New("couch", "http://admin:password@db:5984/")
-	if err != nil {
-		logoru.Error(err)
-		return
-	}
+	projects := projectsTable()
 
-	_, err = db.DB(context.TODO(), "projects").Put(context.TODO(), newProject.ID, newProject)
+	err := projects.Update(&newProject)
 	if err != nil {
 		logoru.Error(err)
-		return
 	}
 }
 
 func DeleteProject(project Project) {
-	db, err := kivik.New("couch", "http://admin:password@db:5984/")
-	if err != nil {
-		logoru.Error(err)
-		return
-	}
+	projects := projectsTable()
 
-	_, err = db.DB(context.TODO(), "projects").Delete(context.TODO(), project.ID, project.Rev)
+	project.Fields.Status = ProjectStatusDeleted
+
+	err := projects.Update(&project)
 	if err != nil {
 		logoru.Error(err)
-		return
 	}
 }

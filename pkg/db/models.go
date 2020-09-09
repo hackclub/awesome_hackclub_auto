@@ -6,17 +6,22 @@ const (
 	ProjectStatusIntent  ProjectStatus = "intent"
 	ProjectStatusQueue   ProjectStatus = "queue"
 	ProjectStatusProject ProjectStatus = "project"
+	ProjectStatusDeleted ProjectStatus = "deleted"
 )
 
 type Project struct {
-	ID          string        `json:"_id"`
-	Rev         string        `json:"_rev,omitempty"`
-	Status      ProjectStatus `json:"status"`
-	Timestamp   string        `json:"ts"`
-	UserID      string        `json:"user_id"`
-	Name        string        `json:"name"`
-	GitHubURL   string        `json:"github_url"`
-	Description string        `json:"description"`
-	Language    string        `json:"language"`
-	Category    string        `json:"category"`
+	ID     string        `json:"id,omitempty"`
+	Fields ProjectFields `json:"fields"`
+}
+
+type ProjectFields struct {
+	Status      ProjectStatus `json:"Status"`
+	Timestamp   string        `json:"Timestamp"`
+	UserID      string        `json:"User ID"`
+	Name        string        `json:"Project Name"`
+	GitHubURL   string        `json:"GitHub URL"`
+	Description string        `json:"Description"`
+	Language    string        `json:"Language"`
+	Category    string        `json:"Category"`
+	Channel     string        `json:"Channel"`
 }
