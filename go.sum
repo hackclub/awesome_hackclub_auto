@@ -2,6 +2,8 @@ github.com/Matt-Gleich/logoru v0.0.0-20200817001912-097ac1695c5f h1:fZLV/64Tql1F
 github.com/Matt-Gleich/logoru v0.0.0-20200817001912-097ac1695c5f/go.mod h1:db3PO+L1XEhATt4QRc7jR7FGXACKPU+Nhzmby9wc7ow=
 github.com/Matt-Gleich/logoru v0.0.0-20200904210752-deb4c45dfe26 h1:mEJXSrDUsbf/YkowA+F4jB3kbxIHnpAJt80LaGS1XuY=
 github.com/Matt-Gleich/logoru v0.0.0-20200904210752-deb4c45dfe26/go.mod h1:db3PO+L1XEhATt4QRc7jR7FGXACKPU+Nhzmby9wc7ow=
+github.com/Matt-Gleich/logoru v0.0.0-20200913033258-86a9b40ebc9e h1:lVfmmS4MdILS4xSLYbvJK6xvsrjNC6BrkDRhzCDezKo=
+github.com/Matt-Gleich/logoru v0.0.0-20200913033258-86a9b40ebc9e/go.mod h1:db3PO+L1XEhATt4QRc7jR7FGXACKPU+Nhzmby9wc7ow=
 github.com/brianloveswords/airtable v0.0.0-20200303135952-d5e6b4516c7b h1:93YLHhodU7P+5QdswIWDPz7xIYglzZU8LIbX7/SFkrg=
 github.com/brianloveswords/airtable v0.0.0-20200303135952-d5e6b4516c7b/go.mod h1:nwbEOwACogJJxLEo0a4lnyieg8EKfq3uIzuZeEHMPI0=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
@@ -58,6 +60,8 @@ golang.org/x/sys v0.0.0-20200810151505-1b9f1253b3ed h1:WBkVNH1zd9jg/dK4HCM4lNANn
 golang.org/x/sys v0.0.0-20200810151505-1b9f1253b3ed/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
 golang.org/x/sys v0.0.0-20200828194041-157a740278f4 h1:kCCpuwSAoYJPkNc6x0xT9yTtV4oKtARo4RGBQWOfg9E=
 golang.org/x/sys v0.0.0-20200828194041-157a740278f4/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
+golang.org/x/sys v0.0.0-20200909081042-eff7692f9009 h1:W0lCpv29Hv0UaM1LXb9QlBHLNP8UFfcKjblhVCWftOM=
+golang.org/x/sys v0.0.0-20200909081042-eff7692f9009/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
 golang.org/x/text v0.3.0/go.mod h1:NqM8EUOU14njkJ3fqMW+pc6Ldnwhi/IjpwHt7yyuwOQ=
 golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 h1:go1bK/D/BFZV2I8cIQd1NKEZ+0owSTG1fDTci4IqFcE=
 golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1/go.mod h1:I/5z698sn9Ka8TeJc9MKroUUfqBBauWjQqLJ2OPfmY0=
