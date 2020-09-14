@@ -71,7 +71,11 @@ func GetAllProjects() []Project {
 
 	projects := []Project{}
 
-	err := table.List(&projects, &airtable.Options{Filter: "Status = 'project'"})
+	err := table.List(&projects, &airtable.Options{Filter: "Status = 'project'", Sort: airtable.Sort{
+		[2]string{"Category", "asc"},
+		[2]string{"Language", "asc"},
+		[2]string{"Name", "asc"},
+	}})
 	if err != nil {
 		logoru.Error(err)
 	}
