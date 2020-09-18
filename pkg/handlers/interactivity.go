@@ -8,11 +8,10 @@ import (
 	"net/url"
 	"os"
 
-	"github.com/hackclub/awesome_hackclub_auto/pkg/block_kit"
-	"github.com/hackclub/awesome_hackclub_auto/pkg/util"
-
 	"github.com/Matt-Gleich/logoru"
+	"github.com/hackclub/awesome_hackclub_auto/pkg/block_kit"
 	"github.com/hackclub/awesome_hackclub_auto/pkg/db"
+	"github.com/hackclub/awesome_hackclub_auto/pkg/util"
 	"github.com/slack-go/slack"
 )
 
@@ -92,7 +91,7 @@ func HandleInteractivity(w http.ResponseWriter, r *http.Request) {
 				Channel:   parsed.Channel.ID,
 			})
 
-			client.OpenView(parsed.TriggerID, slack.ModalViewRequest{
+			_, err = client.OpenView(parsed.TriggerID, slack.ModalViewRequest{
 				Type:            "modal",
 				CallbackID:      "deny",
 				PrivateMetadata: string(privateMetadata),
@@ -109,6 +108,9 @@ func HandleInteractivity(w http.ResponseWriter, r *http.Request) {
 				Submit: slack.NewTextBlockObject("plain_text", "Deny", false, false),
 				Close:  slack.NewTextBlockObject("plain_text", "Cancel", false, false),
 			})
+			if err != nil {
+				logoru.Error(err)
+			}
 		}
 	case slack.InteractionTypeViewSubmission:
 		values := parsed.View.State.Values
@@ -123,7 +125,10 @@ func HandleInteractivity(w http.ResponseWriter, r *http.Request) {
 					},
 				})
 
-				w.Write(resp)
+				_, err = w.Write(resp)
+				if err != nil {
+					logoru.Error(err)
+				}
 				return
 			}
 			var metadata struct {
@@ -132,7 +137,10 @@ func HandleInteractivity(w http.ResponseWriter, r *http.Request) {
 				TS        string
 			}
 
-			json.Unmarshal([]byte(parsed.View.PrivateMetadata), &metadata)
+			err := json.Unmarshal([]byte(parsed.View.PrivateMetadata), &metadata)
+			if err != nil {
+				logoru.Error(err)
+			}
 
 			project := db.GetProject(metadata.ProjectID)
 
@@ -147,7 +155,7 @@ func HandleInteractivity(w http.ResponseWriter, r *http.Request) {
 			client := slack.New(os.Getenv("SLACK_TOKEN"))
 
 			db.UpdateProject(project)
-			_, _, _, err := client.UpdateMessage(metadata.Channel, metadata.TS, slack.MsgOptionBlocks(
+			_, _, _, err = client.UpdateMessage(metadata.Channel, metadata.TS, slack.MsgOptionBlocks(
 				slack.NewSectionBlock(slack.NewTextBlockObject("mrkdwn", fmt.Sprintf("Your project, *%s*, has successfully been submitted! :tada: You'll get another DM once it's been added.", project.Fields.Name), false, false), nil, nil),
 			))
 			if err != nil {
@@ -162,12 +170,15 @@ func HandleInteractivity(w http.ResponseWriter, r *http.Request) {
 				ReviewTS  string
 				Channel   string
 			}
-			json.Unmarshal([]byte(parsed.View.PrivateMetadata), &metadata)
+			err := json.Unmarshal([]byte(parsed.View.PrivateMetadata), &metadata)
+			if err != nil {
+				logoru.Error(err)
+			}
 
 			project := db.GetProject(metadata.ProjectID)
 
 			db.DeleteProject(project)
-			_, _, _, err := client.UpdateMessage(metadata.Channel, metadata.ReviewTS, slack.MsgOptionBlocks(
+			_, _, _, err = client.UpdateMessage(metadata.Channel, metadata.ReviewTS, slack.MsgOptionBlocks(
 				slack.NewSectionBlock(slack.NewTextBlockObject("mrkdwn", fmt.Sprintf("*<%s|%s>* was denied by <@%s>\n*Reason*: %s", project.Fields.GitHubURL, project.Fields.Name, parsed.User.ID, values["reason"]["reason"].Value), false, false), nil, nil),
 			))
 			if err != nil {

@@ -3,9 +3,8 @@ package db
 import (
 	"os"
 
-	"github.com/brianloveswords/airtable"
-
 	"github.com/Matt-Gleich/logoru"
+	"github.com/brianloveswords/airtable"
 )
 
 func projectsTable() airtable.Table {
