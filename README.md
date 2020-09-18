@@ -1,3 +1,4 @@
+<!-- DO NOT REMOVE - contributor_list:data:start:["cjdenio", "Matt-Gleich"]:end -->
 # awesome_hackclub_auto
 
 > Automation service for [awesome-hackclub](https://github.com/hackclub/awesome-hackclub)
@@ -28,3 +29,13 @@ AIRTABLE_BASE_ID=id of the airtable base
 | `docker-compose down`         | Shut down the dev environment                            |
 | `docker-compose restart`      | Restarts the dev environment                             |
 | `docker ps`                   | View running services                                    |
+
+<!-- DO NOT REMOVE - contributor_list:start -->
+## 👥 Contributors
+
+
+- **[@cjdenio](https://github.com/cjdenio)**
+
+- **[@Matt-Gleich](https://github.com/Matt-Gleich)**
+
+<!-- DO NOT REMOVE - contributor_list:end -->
