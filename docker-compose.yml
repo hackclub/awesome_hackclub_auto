@@ -1,20 +1,27 @@
-version: "3"
+version: '3'
 services:
   main:
     build:
       context: .
       dockerfile: dev.Dockerfile
     volumes:
-      - ".:/usr/src/app"
+      - '.:/usr/src/app'
     ports:
-      - "3000:3000"
+      - '3000:3000'
     environment:
-      PORT: "3000"
+      PORT: '3000'
     env_file: .env
+    logging:
+      options:
+        max-size: 500mb
+
   ngrok:
     image: wernight/ngrok
     ports:
-      - "3001:4040"
+      - '3001:4040'
     environment:
       NGROK_PORT: main:3000
     env_file: .ngrok.env
+    logging:
+      options:
+        max-size: 500mb
