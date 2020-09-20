@@ -25,5 +25,6 @@ func main() {
 	err := http.ListenAndServe(":"+port, r)
 	if err != nil {
 		logoru.Critical(err)
+		os.Exit(1)
 	}
 }

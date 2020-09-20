@@ -19,13 +19,14 @@ func HandleEvents(w http.ResponseWriter, r *http.Request) {
 	_, err := buf.ReadFrom(r.Body)
 	if err != nil {
 		logoru.Error(err)
+		os.Exit(1)
 	}
 	body := buf.String()
 	eventsAPIEvent, e := slackevents.ParseEvent(json.RawMessage(body), slackevents.OptionNoVerifyToken())
 	if e != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		logoru.Error(e)
-		return
+		os.Exit(1)
 	}
 
 	if eventsAPIEvent.Type == slackevents.URLVerification {
@@ -34,12 +35,13 @@ func HandleEvents(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			logoru.Error(err)
-			return
+			os.Exit(1)
 		}
 		w.Header().Set("Content-Type", "text")
 		_, err = w.Write([]byte(r.Challenge))
 		if err != nil {
 			logoru.Error(err)
+			os.Exit(1)
 		}
 	}
 	if eventsAPIEvent.Type == slackevents.CallbackEvent {
@@ -58,6 +60,7 @@ func HandleEvents(w http.ResponseWriter, r *http.Request) {
 				})
 				if err != nil {
 					logoru.Error(err)
+					os.Exit(1)
 				} else if len(resp.Messages) >= 1 {
 					logoru.Debug(resp.Messages[0].Text)
 
@@ -73,6 +76,7 @@ func HandleEvents(w http.ResponseWriter, r *http.Request) {
 					})
 					if err != nil {
 						logoru.Error(err)
+						os.Exit(1)
 					}
 
 					intentID := db.CreateProjectIntent(projectIntent)
@@ -91,6 +95,7 @@ func HandleEvents(w http.ResponseWriter, r *http.Request) {
 					), slack.MsgOptionText("You're halfway to getting your project on <https://github.com/hackclub/awesome-hackclub|awesome-hackclub>! :sunglasses:", false), slack.MsgOptionDisableLinkUnfurl())
 					if err != nil {
 						logoru.Error(err)
+						os.Exit(1)
 					}
 				}
 			}
