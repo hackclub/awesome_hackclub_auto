@@ -14,6 +14,8 @@ import (
 	"github.com/slack-go/slack/slackevents"
 )
 
+// HandleEvents gets called when an event occurs in Slack.
+// We only receive reaction events at the moment.
 func HandleEvents(w http.ResponseWriter, r *http.Request) {
 	buf := new(bytes.Buffer)
 	_, err := buf.ReadFrom(r.Body)
@@ -22,6 +24,8 @@ func HandleEvents(w http.ResponseWriter, r *http.Request) {
 		os.Exit(1)
 	}
 	body := buf.String()
+
+	// Parse the event payload
 	eventsAPIEvent, e := slackevents.ParseEvent(json.RawMessage(body), slackevents.OptionNoVerifyToken())
 	if e != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -30,6 +34,8 @@ func HandleEvents(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if eventsAPIEvent.Type == slackevents.URLVerification {
+		// URL verification stuff
+
 		var r *slackevents.ChallengeResponse
 		err := json.Unmarshal([]byte(body), &r)
 		if err != nil {
@@ -48,9 +54,15 @@ func HandleEvents(w http.ResponseWriter, r *http.Request) {
 		innerEvent := eventsAPIEvent.InnerEvent
 		switch ev := innerEvent.Data.(type) {
 		case *slackevents.ReactionAddedEvent:
+			// It was a reaction event
+
 			if ev.Reaction == "awesome" && ev.User == ev.ItemUser {
+				// Only do stuff if:
+				// 	a) the user reacted with the "awesome" emoji AND
+				// 	b) the user is reacting to their own message
+
 				client := slack.New(os.Getenv("SLACK_TOKEN"))
-				//client.PostMessage(ev.ItemUser, slack.MsgOptionText("You reacted with the sacred emoji", false))
+
 				resp, err := client.GetConversationHistory(&slack.GetConversationHistoryParameters{
 					ChannelID: ev.Item.Channel,
 					Limit:     1,
