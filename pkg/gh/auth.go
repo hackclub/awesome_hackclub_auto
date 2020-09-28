@@ -12,9 +12,9 @@ import (
 // Authenticate with GitHub using the secret ssh key
 // Return a github client instance
 func Auth() *github.Client {
-	itr, err := ghinstallation.NewKeyFromFile(http.DefaultTransport, 1, 99, "private-key.pem")
+	itr, err := ghinstallation.NewKeyFromFile(http.DefaultTransport, 81465, 99, "private-key.pem")
 	if err != nil {
-		logoru.Critical("Failed to authenticate from private key;", err)
+		logoru.Critical("Failed to authenticate with GitHub using private key;", err)
 		os.Exit(1)
 	}
 	return github.NewClient(&http.Client{Transport: itr})
