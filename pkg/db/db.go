@@ -27,7 +27,6 @@ func CreateProjectIntent(fields ProjectFields) string {
 	err := projects.Create(&project)
 	if err != nil {
 		logoru.Error(err)
-		os.Exit(1)
 	}
 
 	return project.ID
@@ -52,7 +51,6 @@ func UpdateProject(newProject Project) {
 	err := projects.Update(&newProject)
 	if err != nil {
 		logoru.Error(err)
-		os.Exit(1)
 	}
 }
 
@@ -64,7 +62,6 @@ func DeleteProject(project Project) {
 	err := projects.Update(&project)
 	if err != nil {
 		logoru.Error(err)
-		os.Exit(1)
 	}
 }
 
@@ -80,7 +77,6 @@ func GetAllProjects() []Project {
 	}})
 	if err != nil {
 		logoru.Error(err)
-		os.Exit(1)
 	}
 
 	return projects

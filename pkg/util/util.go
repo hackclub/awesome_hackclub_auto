@@ -44,7 +44,6 @@ func SendReviewMessage(project db.Project) {
 	))
 	if err != nil {
 		logoru.Error(err)
-		os.Exit(1)
 	}
 }
 
@@ -57,7 +56,6 @@ func SendApprovedMessage(project db.Project) {
 
 	if err != nil {
 		logoru.Error(err)
-		os.Exit(1)
 	}
 }
 
@@ -70,7 +68,6 @@ func SendDeniedMessage(project db.Project, reason string) {
 
 	if err != nil {
 		logoru.Error(err)
-		os.Exit(1)
 	}
 }
 
