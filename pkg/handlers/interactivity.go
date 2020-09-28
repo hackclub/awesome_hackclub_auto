@@ -19,12 +19,10 @@ func HandleInteractivity(w http.ResponseWriter, r *http.Request) {
 	buf, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		logoru.Error(err)
-		os.Exit(1)
 	}
 	r.Form, err = url.ParseQuery(string(buf))
 	if err != nil {
 		logoru.Error(err)
-		os.Exit(1)
 	}
 
 	parsed := slack.InteractionCallback{}
@@ -32,7 +30,6 @@ func HandleInteractivity(w http.ResponseWriter, r *http.Request) {
 	err = json.Unmarshal([]byte(r.Form.Get("payload")), &parsed)
 	if err != nil {
 		logoru.Error(err)
-		os.Exit(1)
 	}
 
 	switch parsed.Type {
@@ -48,7 +45,6 @@ func HandleInteractivity(w http.ResponseWriter, r *http.Request) {
 				_, err := client.OpenView(parsed.TriggerID, block_kit.AlreadyInQueue())
 				if err != nil {
 					logoru.Error(err)
-					os.Exit(1)
 				}
 				return
 			case db.ProjectStatusIntent:
@@ -64,7 +60,6 @@ func HandleInteractivity(w http.ResponseWriter, r *http.Request) {
 				_, err := client.OpenView(parsed.TriggerID, block_kit.SubmitModal(string(metadata), project.Fields))
 				if err != nil {
 					logoru.Error(err)
-					os.Exit(1)
 				}
 			case db.ProjectStatusProject:
 				// TODO
@@ -81,7 +76,6 @@ func HandleInteractivity(w http.ResponseWriter, r *http.Request) {
 			))
 			if err != nil {
 				logoru.Error(err)
-				os.Exit(1)
 			}
 			util.SendApprovedMessage(project)
 		} else if actionID == "deny" {
@@ -116,7 +110,6 @@ func HandleInteractivity(w http.ResponseWriter, r *http.Request) {
 			})
 			if err != nil {
 				logoru.Error(err)
-				os.Exit(1)
 			}
 		}
 	case slack.InteractionTypeViewSubmission:
@@ -135,7 +128,6 @@ func HandleInteractivity(w http.ResponseWriter, r *http.Request) {
 				_, err = w.Write(resp)
 				if err != nil {
 					logoru.Error(err)
-					os.Exit(1)
 				}
 				return
 			}
@@ -168,7 +160,6 @@ func HandleInteractivity(w http.ResponseWriter, r *http.Request) {
 			))
 			if err != nil {
 				logoru.Error(err)
-				os.Exit(1)
 			}
 			util.SendReviewMessage(project)
 		} else if parsed.View.CallbackID == "deny" {
@@ -182,7 +173,6 @@ func HandleInteractivity(w http.ResponseWriter, r *http.Request) {
 			err := json.Unmarshal([]byte(parsed.View.PrivateMetadata), &metadata)
 			if err != nil {
 				logoru.Error(err)
-				os.Exit(1)
 			}
 
 			project := db.GetProject(metadata.ProjectID)
@@ -193,7 +183,6 @@ func HandleInteractivity(w http.ResponseWriter, r *http.Request) {
 			))
 			if err != nil {
 				logoru.Error(err)
-				os.Exit(1)
 			}
 			util.SendDeniedMessage(project, values["reason"]["reason"].Value)
 		}

@@ -24,14 +24,12 @@ func populateCategories() {
 	file, err := os.Open(categoriesPath)
 	if err != nil {
 		logoru.Error(err)
-		os.Exit(1)
 	}
 
 	categories, _ := ioutil.ReadAll(file)
 	err = json.Unmarshal(categories, &Categories)
 	if err != nil {
 		logoru.Error(err)
-		os.Exit(1)
 	}
 }
 
@@ -40,13 +38,11 @@ func populateLanguages() {
 	file, err := os.Open(languagesPath)
 	if err != nil {
 		logoru.Error(err)
-		os.Exit(1)
 	}
 
 	languages, _ := ioutil.ReadAll(file)
 	err = json.Unmarshal(languages, &Languages)
 	if err != nil {
 		logoru.Error(err)
-		os.Exit(1)
 	}
 }
