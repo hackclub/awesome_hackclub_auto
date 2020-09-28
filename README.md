@@ -19,6 +19,7 @@ REVIEW_CHANNEL=channel ID to post review messages to
 AIRTABLE_API_KEY=airtable api key
 AIRTABLE_BASE_ID=id of the airtable base
 GH_APP_ID=id of github app
+GH_INSTALLATION_ID=the installation id
 ```
 
 ### Commands
