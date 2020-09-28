@@ -1,4 +1,5 @@
 <!-- DO NOT REMOVE - contributor_list:data:start:["cjdenio", "Matt-Gleich"]:end -->
+
 # awesome_hackclub_auto
 
 > Automation service for [awesome-hackclub](https://github.com/hackclub/awesome-hackclub)
@@ -17,6 +18,8 @@ SLACK_SIGNING_SECRET=signing secret, NOT verification token
 REVIEW_CHANNEL=channel ID to post review messages to
 AIRTABLE_API_KEY=airtable api key
 AIRTABLE_BASE_ID=id of the airtable base
+GH_APP_ID=id of github app
+GH_INSTALLATION_ID=the installation id
 ```
 
 ### Commands
@@ -31,8 +34,8 @@ AIRTABLE_BASE_ID=id of the airtable base
 | `docker ps`                   | View running services                                    |
 
 <!-- DO NOT REMOVE - contributor_list:start -->
-## 👥 Contributors
 
+## 👥 Contributors
 
 - **[@cjdenio](https://github.com/cjdenio)**
 
