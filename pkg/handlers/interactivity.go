@@ -80,6 +80,7 @@ func HandleInteractivity(w http.ResponseWriter, r *http.Request) {
 			}
 			util.SendApprovedMessage(project)
 			gh.Auth()
+			gh.GetSHA()
 		} else if actionID == "deny" {
 			client := slack.New(os.Getenv("SLACK_TOKEN"))
 
