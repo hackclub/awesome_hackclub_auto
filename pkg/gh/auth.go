@@ -3,6 +3,7 @@ package gh
 import (
 	"net/http"
 	"os"
+	"strconv"
 
 	"github.com/Matt-Gleich/logoru"
 	"github.com/bradleyfalzon/ghinstallation"
@@ -12,7 +13,17 @@ import (
 // Authenticate with GitHub using the secret ssh key
 // Return a github client instance
 func Auth() *github.Client {
-	itr, err := ghinstallation.NewKeyFromFile(http.DefaultTransport, 81465, 99, "private-key.pem")
+	appId, err := strconv.Atoi(os.Getenv("GH_APP_ID"))
+	if err != nil {
+		logoru.Critical("The GH_APP_ID environment variable should be set, and a number")
+	}
+
+	installationId, err := strconv.Atoi(os.Getenv("GH_INSTALLATION_ID"))
+	if err != nil {
+		logoru.Critical("The GH_INSTALLATION_ID environment variable should be set, and a number")
+	}
+
+	itr, err := ghinstallation.NewKeyFromFile(http.DefaultTransport, int64(appId), int64(installationId), "private-key.pem")
 	if err != nil {
 		logoru.Critical("Failed to authenticate with GitHub using private key;", err)
 		os.Exit(1)
