@@ -21,6 +21,16 @@ func HandleInteractivity(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		logoru.Error(err)
 	}
+
+	if !util.VerifySlackRequest(r, buf) {
+		logoru.Warning("invalid Slack request")
+		_, err = w.Write(nil)
+		if err != nil {
+			logoru.Error(err)
+		}
+		return
+	}
+
 	r.Form, err = url.ParseQuery(string(buf))
 	if err != nil {
 		logoru.Error(err)
