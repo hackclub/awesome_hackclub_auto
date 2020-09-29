@@ -79,8 +79,7 @@ func HandleInteractivity(w http.ResponseWriter, r *http.Request) {
 				logoru.Error(err)
 			}
 			util.SendApprovedMessage(project)
-			gh.Auth()
-			gh.GetSHA()
+			gh.UpdateREADME("# ⚠️ This repo is under construction ⚠️")
 		} else if actionID == "deny" {
 			client := slack.New(os.Getenv("SLACK_TOKEN"))
 
