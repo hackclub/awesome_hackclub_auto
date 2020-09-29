@@ -20,6 +20,16 @@ func HandleEvents(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		logoru.Error(err)
 	}
+
+	if !util.VerifySlackRequest(r, buf.Bytes()) {
+		logoru.Warning("invalid Slack request")
+		_, err = w.Write(nil)
+		if err != nil {
+			logoru.Error(err)
+		}
+		return
+	}
+
 	body := buf.String()
 	eventsAPIEvent, e := slackevents.ParseEvent(json.RawMessage(body), slackevents.OptionNoVerifyToken())
 	if e != nil {
