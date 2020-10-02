@@ -87,14 +87,14 @@ func HandleEvents(w http.ResponseWriter, r *http.Request) {
 					intentID := db.CreateProjectIntent(projectIntent)
 
 					_, _, err = client.PostMessage(ev.ItemUser, slack.MsgOptionBlocks(
-						slack.NewSectionBlock(slack.NewTextBlockObject("mrkdwn", fmt.Sprintf("Howdy! :wave: I see that you've reacted to <%s|one of your messages> with :awesome:. You're halfway to getting your project on <https://github.com/hackclub/awesome-hackclub|awesome-hackclub>! :sunglasses: Just click that button down there :arrow_down: to fill in some info and finish your submission! :tada:", permalink), false, false), nil, nil),
+						slack.NewSectionBlock(slack.NewTextBlockObject("mrkdwn", fmt.Sprintf("Howdy! :wave: I see that you've reacted to <%s|one of your messages> with :awesome:. You're halfway to getting your project on <https://github.com/hackclub/awesome-hackclub|awesome-hackclub>! :sunglasses: Just click that button down there to fill in some info and finish your submission! :tada:", permalink), false, false), nil, nil),
 						slack.NewActionBlock(
 							"",
 							slack.NewButtonBlockElement(
 								"submit",
 								intentID,
 								slack.NewTextBlockObject("plain_text", "Submit", true, false),
-							),
+							).WithStyle(slack.StylePrimary),
 						),
 						slack.NewContextBlock("", slack.NewTextBlockObject("mrkdwn", "Was this a mistake? No worries! just ignore this message and you'll be fine.", false, false)),
 					), slack.MsgOptionText("You're halfway to getting your project on <https://github.com/hackclub/awesome-hackclub|awesome-hackclub>! :sunglasses:", false), slack.MsgOptionDisableLinkUnfurl())
