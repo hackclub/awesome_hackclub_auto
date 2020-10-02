@@ -11,7 +11,7 @@ import (
 	"github.com/Matt-Gleich/logoru"
 	"github.com/hackclub/awesome_hackclub_auto/pkg/block_kit"
 	"github.com/hackclub/awesome_hackclub_auto/pkg/db"
-	"github.com/hackclub/awesome_hackclub_auto/pkg/gh"
+	"github.com/hackclub/awesome_hackclub_auto/pkg/gen"
 	"github.com/hackclub/awesome_hackclub_auto/pkg/util"
 	"github.com/slack-go/slack"
 )
@@ -89,7 +89,8 @@ func HandleInteractivity(w http.ResponseWriter, r *http.Request) {
 				logoru.Error(err)
 			}
 			util.SendApprovedMessage(project)
-			gh.UpdateREADME("# ⚠️ This repo is under construction ⚠️")
+			fmt.Println(gen.GroupProjects(db.GetAllProjects()))
+			// gh.UpdateREADME("# ⚠️ This repo is under construction ⚠️")
 		} else if actionID == "deny" {
 			client := slack.New(os.Getenv("SLACK_TOKEN"))
 
