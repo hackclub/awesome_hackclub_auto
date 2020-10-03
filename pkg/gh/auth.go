@@ -23,7 +23,7 @@ func Auth() *github.Client {
 		logoru.Critical("The GH_INSTALLATION_ID environment variable should be set, and a number")
 	}
 
-	itr, err := ghinstallation.NewKeyFromFile(http.DefaultTransport, int64(appId), int64(installationId), "private-key.pem")
+	itr, err := ghinstallation.New(http.DefaultTransport, int64(appId), int64(installationId), LoadPrivateKey())
 	if err != nil {
 		logoru.Critical("Failed to authenticate with GitHub using private key;", err)
 		os.Exit(1)
