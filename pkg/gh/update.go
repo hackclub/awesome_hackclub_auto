@@ -3,20 +3,26 @@ package gh
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 
 	"github.com/Matt-Gleich/logoru"
 	"github.com/google/go-github/v32/github"
+	"github.com/hackclub/awesome_hackclub_auto/pkg/db"
 )
 
-func UpdateREADME(content string) {
+func UpdateREADME(content string, project db.Project) {
 	client := Auth()
 
 	var (
-		message = "✨ Add project"
-		sha     = getSHA()
-		branch  = "master"
+		message = fmt.Sprintf(
+			"✨ Add %v project under %v",
+			project.Fields.Name,
+			project.Fields.Category,
+		)
+		sha    = getSHA()
+		branch = "master"
 	)
 
 	_, _, err := client.Repositories.UpdateFile(
@@ -34,7 +40,11 @@ func UpdateREADME(content string) {
 	if err != nil {
 		logoru.Error("Failed to push change to repo;", err)
 	}
-	logoru.Success("Pushed changes to repo")
+	logoru.Success(fmt.Sprintf(
+		"Pushed changes to repo for %v under %v",
+		project.Fields.Name,
+		project.Fields.Category,
+	))
 }
 
 // Get the current SHA for the file
