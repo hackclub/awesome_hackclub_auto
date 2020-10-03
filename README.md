@@ -1,4 +1,4 @@
-<!-- DO NOT REMOVE - contributor_list:data:start:["cjdenio", "Matt-Gleich"]:end -->
+<!-- DO NOT REMOVE - contributor_list:data:start:["Matt-Gleich", "cjdenio"]:end -->
 
 # awesome_hackclub_auto
 
@@ -34,11 +34,11 @@ GH_INSTALLATION_ID=the installation id
 | `docker ps`                   | View running services                                    |
 
 <!-- DO NOT REMOVE - contributor_list:start -->
-
 ## 👥 Contributors
 
-- **[@cjdenio](https://github.com/cjdenio)**
 
 - **[@Matt-Gleich](https://github.com/Matt-Gleich)**
+
+- **[@cjdenio](https://github.com/cjdenio)**
 
 <!-- DO NOT REMOVE - contributor_list:end -->
