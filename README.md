@@ -20,6 +20,7 @@ AIRTABLE_API_KEY=airtable api key
 AIRTABLE_BASE_ID=id of the airtable base
 GH_APP_ID=id of github app
 GH_INSTALLATION_ID=the installation id
+HONEYBADGER_API_KEY=honeybadger api key (not required)
 ```
 
 ### Commands
@@ -34,8 +35,8 @@ GH_INSTALLATION_ID=the installation id
 | `docker ps`                   | View running services                                    |
 
 <!-- DO NOT REMOVE - contributor_list:start -->
-## 👥 Contributors
 
+## 👥 Contributors
 
 - **[@Matt-Gleich](https://github.com/Matt-Gleich)**
 
