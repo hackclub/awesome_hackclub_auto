@@ -57,6 +57,7 @@ func SendApprovedMessage(project db.Project) {
 	if err != nil {
 		logoru.Error(err)
 	}
+	logoru.Info("Sent approved message for", project.Fields.Name)
 }
 
 func SendDeniedMessage(project db.Project, reason string) {
@@ -69,6 +70,7 @@ func SendDeniedMessage(project db.Project, reason string) {
 	if err != nil {
 		logoru.Error(err)
 	}
+	logoru.Info("Sent denied message for", project.Fields.Name)
 }
 
 // GenerateProjectIntent generates some pre-filled project data, given the text of the message

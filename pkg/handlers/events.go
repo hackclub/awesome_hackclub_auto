@@ -68,7 +68,7 @@ func HandleEvents(w http.ResponseWriter, r *http.Request) {
 				if err != nil {
 					logoru.Error(err)
 				} else if len(resp.Messages) >= 1 {
-					logoru.Debug(resp.Messages[0].Text)
+					logoru.Info("Detected new project")
 
 					projectIntent := util.GenerateProjectIntent(resp.Messages[0].Text)
 

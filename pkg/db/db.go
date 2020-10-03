@@ -42,6 +42,7 @@ func GetProject(id string) Project {
 		return Project{}
 	}
 
+	logoru.Info("Got project", project.Fields.Name, "in airtable")
 	return project
 }
 
@@ -52,6 +53,7 @@ func UpdateProject(newProject Project) {
 	if err != nil {
 		logoru.Error(err)
 	}
+	logoru.Info("Updated project", newProject.Fields.Name, "in airtable")
 }
 
 func DeleteProject(project Project) {
@@ -63,6 +65,7 @@ func DeleteProject(project Project) {
 	if err != nil {
 		logoru.Error(err)
 	}
+	logoru.Info("Removed project", project.Fields.Name, "from airtable")
 }
 
 func GetAllProjects() []Project {
@@ -78,6 +81,6 @@ func GetAllProjects() []Project {
 	if err != nil {
 		logoru.Error(err)
 	}
-
+	logoru.Info("Got all projects from airtable")
 	return projects
 }

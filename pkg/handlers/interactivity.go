@@ -89,10 +89,10 @@ func HandleInteractivity(w http.ResponseWriter, r *http.Request) {
 			if err != nil {
 				logoru.Error(err)
 			}
-			util.SendApprovedMessage(project)
 			projects := gen.GroupProjects(db.GetAllProjects())
 			readme := gen.FormREADME(projects)
 			gh.UpdateREADME(readme, project)
+			util.SendApprovedMessage(project)
 		} else if actionID == "deny" {
 			client := slack.New(os.Getenv("SLACK_TOKEN"))
 

@@ -12,6 +12,7 @@ import (
 	"github.com/hackclub/awesome_hackclub_auto/pkg/db"
 )
 
+// Push a new commit updating the README
 func UpdateREADME(content string, project db.Project) {
 	client := Auth()
 
