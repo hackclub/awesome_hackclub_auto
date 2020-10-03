@@ -7,9 +7,9 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	"github.com/Matt-Gleich/logoru"
 	"github.com/google/go-github/v32/github"
 	"github.com/hackclub/awesome_hackclub_auto/pkg/db"
+	"github.com/hackclub/awesome_hackclub_auto/pkg/logging"
 )
 
 // Push a new commit updating the README
@@ -39,13 +39,13 @@ func UpdateREADME(content string, project db.Project) {
 		},
 	)
 	if err != nil {
-		logoru.Error("Failed to push change to repo;", err)
+		logging.Log("Failed to push change to repo; "+err.Error(), "error", false)
 	}
-	logoru.Success(fmt.Sprintf(
+	logging.Log(fmt.Sprintf(
 		"Pushed changes to repo for %v under %v",
 		project.Fields.Name,
 		project.Fields.Category,
-	))
+	), "success", false)
 }
 
 // Get the current SHA for the file
@@ -53,21 +53,21 @@ func getSHA() string {
 	// Making request
 	resp, err := http.Get("https://api.github.com/repos/hackclub/awesome-hackclub/contents/README.md")
 	if err != nil || resp.StatusCode != http.StatusOK {
-		logoru.Error("Failed to get SHA for README.md;", err)
+		logging.Log("Failed to get SHA for README.md; "+err.Error(), "error", false)
 	}
 	defer resp.Body.Close()
 
 	// Parsing response
 	bin, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		logoru.Error("Failed to get binary from response;", err)
+		logging.Log("Failed to get binary from response; "+err.Error(), "error", false)
 	}
 	var data struct {
 		Sha string `json:"sha"`
 	}
 	err = json.Unmarshal(bin, &data)
 	if err != nil {
-		logoru.Error("Failed to parse json from response;", err)
+		logging.Log("Failed to parse json from response; "+err.Error(), "error", false)
 	}
 	return data.Sha
 }

@@ -5,8 +5,8 @@ import (
 	"os"
 	"regexp"
 
-	"github.com/Matt-Gleich/logoru"
 	"github.com/hackclub/awesome_hackclub_auto/pkg/db"
+	"github.com/hackclub/awesome_hackclub_auto/pkg/logging"
 	"github.com/slack-go/slack"
 )
 
@@ -43,7 +43,7 @@ func SendReviewMessage(project db.Project) {
 		),
 	))
 	if err != nil {
-		logoru.Error(err)
+		logging.Log(err, "error", false)
 	}
 }
 
@@ -55,9 +55,9 @@ func SendApprovedMessage(project db.Project) {
 	))
 
 	if err != nil {
-		logoru.Error(err)
+		logging.Log(err, "error", false)
 	}
-	logoru.Info("Sent approved message for", project.Fields.Name)
+	logging.Log("Sent approved message for "+project.Fields.Name, "info", false)
 }
 
 func SendDeniedMessage(project db.Project, reason string) {
@@ -68,9 +68,9 @@ func SendDeniedMessage(project db.Project, reason string) {
 	))
 
 	if err != nil {
-		logoru.Error(err)
+		logging.Log(err, "error", false)
 	}
-	logoru.Info("Sent denied message for", project.Fields.Name)
+	logging.Log("Sent denied message for "+project.Fields.Name, "info", false)
 }
 
 // GenerateProjectIntent generates some pre-filled project data, given the text of the message

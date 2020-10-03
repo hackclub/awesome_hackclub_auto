@@ -7,8 +7,8 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/Matt-Gleich/logoru"
 	"github.com/hackclub/awesome_hackclub_auto/pkg/db"
+	"github.com/hackclub/awesome_hackclub_auto/pkg/logging"
 	"github.com/hackclub/awesome_hackclub_auto/pkg/util"
 	"github.com/slack-go/slack"
 	"github.com/slack-go/slack/slackevents"
@@ -18,14 +18,14 @@ func HandleEvents(w http.ResponseWriter, r *http.Request) {
 	buf := new(bytes.Buffer)
 	_, err := buf.ReadFrom(r.Body)
 	if err != nil {
-		logoru.Error(err)
+		logging.Log(err, "error", false)
 	}
 
 	if !util.VerifySlackRequest(r, buf.Bytes()) {
-		logoru.Warning("invalid Slack request")
+		logging.Log("invalid Slack request", "warning", false)
 		_, err = w.Write(nil)
 		if err != nil {
-			logoru.Error(err)
+			logging.Log(err, "error", false)
 		}
 		return
 	}
@@ -34,7 +34,7 @@ func HandleEvents(w http.ResponseWriter, r *http.Request) {
 	eventsAPIEvent, e := slackevents.ParseEvent(json.RawMessage(body), slackevents.OptionNoVerifyToken())
 	if e != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		logoru.Error(e)
+		logging.Log(e, "error", false)
 	}
 
 	if eventsAPIEvent.Type == slackevents.URLVerification {
@@ -42,13 +42,13 @@ func HandleEvents(w http.ResponseWriter, r *http.Request) {
 		err := json.Unmarshal([]byte(body), &r)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
-			logoru.Error(err)
+			logging.Log(err, "error", false)
 			os.Exit(1)
 		}
 		w.Header().Set("Content-Type", "text")
 		_, err = w.Write([]byte(r.Challenge))
 		if err != nil {
-			logoru.Error(err)
+			logging.Log(err, "error", false)
 		}
 	}
 	if eventsAPIEvent.Type == slackevents.CallbackEvent {
@@ -66,9 +66,9 @@ func HandleEvents(w http.ResponseWriter, r *http.Request) {
 					Oldest:    ev.Item.Timestamp,
 				})
 				if err != nil {
-					logoru.Error(err)
+					logging.Log(err, "error", false)
 				} else if len(resp.Messages) >= 1 {
-					logoru.Info("Detected new project")
+					logging.Log("Detected new project", "info", false)
 
 					projectIntent := util.GenerateProjectIntent(resp.Messages[0].Text)
 
@@ -81,7 +81,7 @@ func HandleEvents(w http.ResponseWriter, r *http.Request) {
 						Ts:      ev.Item.Timestamp,
 					})
 					if err != nil {
-						logoru.Error(err)
+						logging.Log(err, "error", false)
 					}
 
 					intentID := db.CreateProjectIntent(projectIntent)
@@ -99,7 +99,7 @@ func HandleEvents(w http.ResponseWriter, r *http.Request) {
 						slack.NewContextBlock("", slack.NewTextBlockObject("mrkdwn", "Was this a mistake? No worries! just ignore this message and you'll be fine.", false, false)),
 					), slack.MsgOptionText("You're halfway to getting your project on <https://github.com/hackclub/awesome-hackclub|awesome-hackclub>! :sunglasses:", false), slack.MsgOptionDisableLinkUnfurl())
 					if err != nil {
-						logoru.Error(err)
+						logging.Log(err, "error", false)
 					}
 				}
 			}

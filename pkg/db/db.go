@@ -1,10 +1,11 @@
 package db
 
 import (
+	"fmt"
 	"os"
 
-	"github.com/Matt-Gleich/logoru"
 	"github.com/brianloveswords/airtable"
+	"github.com/hackclub/awesome_hackclub_auto/pkg/logging"
 )
 
 func projectsTable() airtable.Table {
@@ -26,7 +27,7 @@ func CreateProjectIntent(fields ProjectFields) string {
 
 	err := projects.Create(&project)
 	if err != nil {
-		logoru.Error(err)
+		logging.Log(err, "error", false)
 	}
 
 	return project.ID
@@ -42,7 +43,7 @@ func GetProject(id string) Project {
 		return Project{}
 	}
 
-	logoru.Info("Got project", project.Fields.Name, "in airtable")
+	logging.Log(fmt.Sprintf("Got project %s from Airtable", project.Fields.Name), "info", false)
 	return project
 }
 
@@ -51,9 +52,9 @@ func UpdateProject(newProject Project) {
 
 	err := projects.Update(&newProject)
 	if err != nil {
-		logoru.Error(err)
+		logging.Log(err, "error", false)
 	}
-	logoru.Info("Updated project", newProject.Fields.Name, "in airtable")
+	logging.Log(fmt.Sprintf("Updated project %s in Airtable", newProject.Fields.Name), "info", false)
 }
 
 func DeleteProject(project Project) {
@@ -63,9 +64,9 @@ func DeleteProject(project Project) {
 
 	err := projects.Update(&project)
 	if err != nil {
-		logoru.Error(err)
+		logging.Log(err, "error", false)
 	}
-	logoru.Info("Removed project", project.Fields.Name, "from airtable")
+	logging.Log(fmt.Sprintf("Removed project %s from Airtable", project.Fields.Name), "info", false)
 }
 
 func GetAllProjects() []Project {
@@ -79,8 +80,8 @@ func GetAllProjects() []Project {
 		[2]string{"Name", "asc"},
 	}})
 	if err != nil {
-		logoru.Error(err)
+		logging.Log(err, "error", false)
 	}
-	logoru.Info("Got all projects from airtable")
+	logging.Log("Got all projects from Airtable", "info", false)
 	return projects
 }

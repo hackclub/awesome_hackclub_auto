@@ -8,11 +8,11 @@ import (
 	"net/url"
 	"os"
 
-	"github.com/Matt-Gleich/logoru"
 	"github.com/hackclub/awesome_hackclub_auto/pkg/block_kit"
 	"github.com/hackclub/awesome_hackclub_auto/pkg/db"
 	"github.com/hackclub/awesome_hackclub_auto/pkg/gen"
 	"github.com/hackclub/awesome_hackclub_auto/pkg/gh"
+	"github.com/hackclub/awesome_hackclub_auto/pkg/logging"
 	"github.com/hackclub/awesome_hackclub_auto/pkg/util"
 	"github.com/slack-go/slack"
 )
@@ -20,28 +20,28 @@ import (
 func HandleInteractivity(w http.ResponseWriter, r *http.Request) {
 	buf, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		logoru.Error(err)
+		logging.Log(err, "error", false)
 	}
 
 	if !util.VerifySlackRequest(r, buf) {
-		logoru.Warning("invalid Slack request")
+		logging.Log("invalid Slack request", "warning", false)
 		_, err = w.Write(nil)
 		if err != nil {
-			logoru.Error(err)
+			logging.Log(err, "error", false)
 		}
 		return
 	}
 
 	r.Form, err = url.ParseQuery(string(buf))
 	if err != nil {
-		logoru.Error(err)
+		logging.Log(err, "error", false)
 	}
 
 	parsed := slack.InteractionCallback{}
 
 	err = json.Unmarshal([]byte(r.Form.Get("payload")), &parsed)
 	if err != nil {
-		logoru.Error(err)
+		logging.Log(err, "error", false)
 	}
 
 	switch parsed.Type {
@@ -56,7 +56,7 @@ func HandleInteractivity(w http.ResponseWriter, r *http.Request) {
 			case db.ProjectStatusQueue:
 				_, err := client.OpenView(parsed.TriggerID, block_kit.AlreadyInQueue())
 				if err != nil {
-					logoru.Error(err)
+					logging.Log(err, "error", false)
 				}
 				return
 			case db.ProjectStatusIntent:
@@ -71,7 +71,7 @@ func HandleInteractivity(w http.ResponseWriter, r *http.Request) {
 				})
 				_, err := client.OpenView(parsed.TriggerID, block_kit.SubmitModal(string(metadata), project.Fields))
 				if err != nil {
-					logoru.Error(err)
+					logging.Log(err, "error", false)
 				}
 			case db.ProjectStatusProject:
 				// TODO
@@ -87,7 +87,7 @@ func HandleInteractivity(w http.ResponseWriter, r *http.Request) {
 				slack.NewSectionBlock(slack.NewTextBlockObject("mrkdwn", fmt.Sprintf("*<%s|%s>* was approved by <@%s>", project.Fields.GitHubURL, project.Fields.Name, parsed.User.ID), false, false), nil, nil),
 			))
 			if err != nil {
-				logoru.Error(err)
+				logging.Log(err, "error", false)
 			}
 			projects := gen.GroupProjects(db.GetAllProjects())
 			readme := gen.FormREADME(projects)
@@ -124,7 +124,7 @@ func HandleInteractivity(w http.ResponseWriter, r *http.Request) {
 				Close:  slack.NewTextBlockObject("plain_text", "Cancel", false, false),
 			})
 			if err != nil {
-				logoru.Error(err)
+				logging.Log(err, "error", false)
 			}
 		}
 	case slack.InteractionTypeViewSubmission:
@@ -142,7 +142,7 @@ func HandleInteractivity(w http.ResponseWriter, r *http.Request) {
 
 				_, err = w.Write(resp)
 				if err != nil {
-					logoru.Error(err)
+					logging.Log(err, "error", false)
 				}
 				return
 			}
@@ -154,7 +154,7 @@ func HandleInteractivity(w http.ResponseWriter, r *http.Request) {
 
 			err := json.Unmarshal([]byte(parsed.View.PrivateMetadata), &metadata)
 			if err != nil {
-				logoru.Error(err)
+				logging.Log(err, "error", false)
 			}
 
 			project := db.GetProject(metadata.ProjectID)
@@ -174,7 +174,7 @@ func HandleInteractivity(w http.ResponseWriter, r *http.Request) {
 				slack.NewSectionBlock(slack.NewTextBlockObject("mrkdwn", fmt.Sprintf("Your project, *%s*, has successfully been submitted! :tada: You'll get another DM once it's been added.", project.Fields.Name), false, false), nil, nil),
 			))
 			if err != nil {
-				logoru.Error(err)
+				logging.Log(err, "error", false)
 			}
 			util.SendReviewMessage(project)
 		} else if parsed.View.CallbackID == "deny" {
@@ -187,7 +187,7 @@ func HandleInteractivity(w http.ResponseWriter, r *http.Request) {
 			}
 			err := json.Unmarshal([]byte(parsed.View.PrivateMetadata), &metadata)
 			if err != nil {
-				logoru.Error(err)
+				logging.Log(err, "error", false)
 			}
 
 			project := db.GetProject(metadata.ProjectID)
@@ -197,7 +197,7 @@ func HandleInteractivity(w http.ResponseWriter, r *http.Request) {
 				slack.NewSectionBlock(slack.NewTextBlockObject("mrkdwn", fmt.Sprintf("*<%s|%s>* was denied by <@%s>\n*Reason*: %s", project.Fields.GitHubURL, project.Fields.Name, parsed.User.ID, values["reason"]["reason"].Value), false, false), nil, nil),
 			))
 			if err != nil {
-				logoru.Error(err)
+				logging.Log(err, "error", false)
 			}
 			util.SendDeniedMessage(project, values["reason"]["reason"].Value)
 		}
