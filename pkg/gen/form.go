@@ -23,10 +23,11 @@ func FormREADME(groupedProjects map[string][]db.Project) string {
 		body = fmt.Sprintf("%v\n## %v\n", body, category)
 		for _, project := range projects {
 			body = fmt.Sprintf(
-				"%v- [%v](%v) - %v\n",
+				"%v- [%v](%v) - (%v) %v\n",
 				body,
 				project.Fields.Name,
 				project.Fields.GitHubURL,
+				project.Fields.Language,
 				project.Fields.Description,
 			)
 		}
