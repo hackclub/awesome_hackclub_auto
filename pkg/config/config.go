@@ -6,7 +6,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/Matt-Gleich/logoru"
+	"github.com/hackclub/awesome_hackclub_auto/pkg/logging"
 )
 
 var (
@@ -23,13 +23,13 @@ func populateCategories() {
 	categoriesPath, _ := filepath.Abs("./pkg/config/categories.json")
 	file, err := os.Open(categoriesPath)
 	if err != nil {
-		logoru.Error(err)
+		logging.Log(err, "error", false)
 	}
 
 	categories, _ := ioutil.ReadAll(file)
 	err = json.Unmarshal(categories, &Categories)
 	if err != nil {
-		logoru.Error(err)
+		logging.Log(err, "error", false)
 	}
 }
 
@@ -37,12 +37,12 @@ func populateLanguages() {
 	languagesPath, _ := filepath.Abs("./pkg/config/languages.json")
 	file, err := os.Open(languagesPath)
 	if err != nil {
-		logoru.Error(err)
+		logging.Log(err, "error", false)
 	}
 
 	languages, _ := ioutil.ReadAll(file)
 	err = json.Unmarshal(languages, &Languages)
 	if err != nil {
-		logoru.Error(err)
+		logging.Log(err, "error", false)
 	}
 }
