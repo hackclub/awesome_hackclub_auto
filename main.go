@@ -14,8 +14,6 @@ import (
 func main() {
 	honeybadger.Configure(honeybadger.Configuration{APIKey: os.Getenv("HONEYBADGER_API_KEY")})
 
-	logging.Log("test log 123...", "error", false)
-
 	config.PopulateConfig()
 
 	r := mux.NewRouter()
