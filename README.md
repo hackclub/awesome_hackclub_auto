@@ -1,4 +1,4 @@
-<!-- DO NOT REMOVE - contributor_list:data:start:["Matt-Gleich", "cjdenio"]:end -->
+<!-- DO NOT REMOVE - contributor_list:data:start:["cjdenio", "Matt-Gleich"]:end -->
 
 # awesome_hackclub_auto
 
@@ -37,8 +37,8 @@ GH_INSTALLATION_ID=the installation id
 ## 👥 Contributors
 
 
-- **[@Matt-Gleich](https://github.com/Matt-Gleich)**
-
 - **[@cjdenio](https://github.com/cjdenio)**
+
+- **[@Matt-Gleich](https://github.com/Matt-Gleich)**
 
 <!-- DO NOT REMOVE - contributor_list:end -->
