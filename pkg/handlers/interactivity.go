@@ -12,6 +12,7 @@ import (
 	"github.com/hackclub/awesome_hackclub_auto/pkg/block_kit"
 	"github.com/hackclub/awesome_hackclub_auto/pkg/db"
 	"github.com/hackclub/awesome_hackclub_auto/pkg/gen"
+	"github.com/hackclub/awesome_hackclub_auto/pkg/gh"
 	"github.com/hackclub/awesome_hackclub_auto/pkg/util"
 	"github.com/slack-go/slack"
 )
@@ -89,8 +90,9 @@ func HandleInteractivity(w http.ResponseWriter, r *http.Request) {
 				logoru.Error(err)
 			}
 			util.SendApprovedMessage(project)
-			fmt.Println(gen.GroupProjects(db.GetAllProjects()))
-			// gh.UpdateREADME("# ⚠️ This repo is under construction ⚠️")
+			projects := gen.GroupProjects(db.GetAllProjects())
+			readme := gen.FormREADME(projects)
+			gh.UpdateREADME(readme)
 		} else if actionID == "deny" {
 			client := slack.New(os.Getenv("SLACK_TOKEN"))
 
