@@ -22,16 +22,21 @@ func RepoInfo(client *github.Client, owner string, name string) RepoMetaData {
 		logging.Log(fmt.Sprintf("Failed to get info from repo: %v", err), "warning", true)
 		return RepoMetaData{Valid: false}
 	}
+
 	// Checking to see if the language is a valid language
-	for _, lang := range config.Languages {
-		if lang == *repo.Language {
-			return RepoMetaData{
-				Language:    *repo.Language,
-				Description: *repo.Description,
-				Valid:       *repo.Private,
+	if *repo.Language != "" {
+		// Repo has a language
+		for _, lang := range config.Languages {
+			if lang == *repo.Language {
+				return RepoMetaData{
+					Language:    *repo.Language,
+					Description: *repo.Description,
+					Valid:       *repo.Private,
+				}
 			}
 		}
 	}
+
 	logging.Log(*repo.Language+" isn't a supported language", "warning", false)
 	return RepoMetaData{
 		Description: *repo.Description,
