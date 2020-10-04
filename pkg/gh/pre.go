@@ -23,23 +23,27 @@ func RepoInfo(client *github.Client, owner string, name string) RepoMetaData {
 		return RepoMetaData{Valid: false}
 	}
 
+	metadata := RepoMetaData{}
+
 	// Checking to see if the language is a valid language
 	if *repo.Language != "" {
 		// Repo has a language
 		for _, lang := range config.Languages {
 			if lang == *repo.Language {
-				return RepoMetaData{
-					Language:    *repo.Language,
-					Description: *repo.Description,
-					Valid:       !*repo.Private,
-				}
+				metadata.Language = *repo.Language
 			}
 		}
 	}
 
-	logging.Log(*repo.Language+" isn't a supported language", "warning", false)
-	return RepoMetaData{
-		Description: *repo.Description,
-		Valid:       !*repo.Private,
+	if metadata.Language == "" {
+		logging.Log(*repo.Language+" isn't a supported language", "warning", false)
 	}
+
+	metadata.Valid = !*repo.Private
+
+	if *repo.Description != "" {
+		metadata.Description = *repo.Description
+	}
+
+	return metadata
 }
