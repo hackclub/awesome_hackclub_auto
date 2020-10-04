@@ -19,7 +19,7 @@ type RepoMetaData struct {
 func RepoInfo(client *github.Client, owner string, name string) RepoMetaData {
 	repo, _, err := client.Repositories.Get(context.Background(), owner, name)
 	if err != nil {
-		logging.Log(fmt.Sprintf("Failed to get info from repo: %v", err), "warning", true)
+		logging.Log(fmt.Sprintf("Failed to get info from repo: %v", err), "warning", false)
 		return RepoMetaData{Valid: false}
 	}
 
