@@ -80,6 +80,11 @@ func HandleInteractivity(w http.ResponseWriter, r *http.Request) {
 			client := slack.New(os.Getenv("SLACK_TOKEN"))
 			project := db.GetProject(parsed.ActionCallback.BlockActions[0].Value)
 
+			if project.Fields.Status == db.ProjectStatusProject {
+				// Exit if the project's already approved
+				return
+			}
+
 			project.Fields.Status = db.ProjectStatusProject
 			db.UpdateProject(project)
 
