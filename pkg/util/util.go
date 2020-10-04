@@ -3,7 +3,6 @@ package util
 import (
 	"fmt"
 	"os"
-	"regexp"
 
 	"github.com/hackclub/awesome_hackclub_auto/pkg/db"
 	"github.com/hackclub/awesome_hackclub_auto/pkg/gh"
@@ -76,11 +75,11 @@ func SendDeniedMessage(project db.Project, reason string) {
 
 // GenerateProjectIntent generates some pre-filled project data, given the text of the message
 func GenerateProjectIntent(messageText string) db.ProjectFields {
-	re := regexp.MustCompile(`https?:\/\/github\.com\/([^\/>\|]+)\/([^\/>\|]+)`).FindStringSubmatch(messageText)
+	url, hasUrl := ParseGitHubURLInString(messageText)
 
-	if re != nil {
-		owner := re[1]
-		name := re[2]
+	if hasUrl {
+		owner := url.Owner
+		name := url.Name
 
 		ghClient := gh.Auth()
 		repoInfo := gh.RepoInfo(ghClient, owner, name)
@@ -89,7 +88,7 @@ func GenerateProjectIntent(messageText string) db.ProjectFields {
 			fmt.Println("AHHHHHHH")
 		}
 		return db.ProjectFields{
-			GitHubURL:   re[0],
+			GitHubURL:   url.URL,
 			Name:        name,
 			Username:    owner,
 			Language:    repoInfo.Language,
@@ -102,5 +101,6 @@ func GenerateProjectIntent(messageText string) db.ProjectFields {
 }
 
 func IsValidProjectURL(url string) bool {
-	return regexp.MustCompile(`^https?:\/\/github\.com\/([^\/>\|]+)\/([^\/>\|]+)\/?$`).MatchString(url)
+	_, valid := ParseGitHubURL(url)
+	return valid
 }

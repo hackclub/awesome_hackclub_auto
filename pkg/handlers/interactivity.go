@@ -136,7 +136,8 @@ func HandleInteractivity(w http.ResponseWriter, r *http.Request) {
 		values := parsed.View.State.Values
 
 		if parsed.View.CallbackID == "submit" {
-			if !util.IsValidProjectURL(values["url"]["url"].Value) {
+			url, valid := util.ParseGitHubURL(values["url"]["url"].Value)
+			if !valid {
 				w.Header().Add("Content-Type", "application/json")
 				resp, _ := json.Marshal(slack.ViewSubmissionResponse{
 					ResponseAction: slack.RAErrors,
@@ -151,6 +152,26 @@ func HandleInteractivity(w http.ResponseWriter, r *http.Request) {
 				}
 				return
 			}
+
+			ghClient := gh.Auth()
+			repoMetadata := gh.RepoInfo(ghClient, url.Owner, url.Name)
+
+			if !repoMetadata.Valid {
+				w.Header().Add("Content-Type", "application/json")
+				resp, _ := json.Marshal(slack.ViewSubmissionResponse{
+					ResponseAction: slack.RAErrors,
+					Errors: map[string]string{
+						"url": "I can't seem to find this repo. Please make sure it's public!",
+					},
+				})
+
+				_, err = w.Write(resp)
+				if err != nil {
+					logging.Log(err, "error", false)
+				}
+				return
+			}
+
 			var metadata struct {
 				ProjectID string
 				Channel   string
