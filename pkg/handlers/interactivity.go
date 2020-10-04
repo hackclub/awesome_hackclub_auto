@@ -171,7 +171,7 @@ func HandleInteractivity(w http.ResponseWriter, r *http.Request) {
 			project.Fields.GitHubURL = values["url"]["url"].Value
 			project.Fields.Category = values["category"]["category"].SelectedOption.Value
 			project.Fields.Language = values["language"]["language"].SelectedOption.Value
-			project.Fields.GitHubURL = values["username"]["username"].Value
+			project.Fields.Username = values["username"]["username"].Value
 
 			client := slack.New(os.Getenv("SLACK_TOKEN"))
 
