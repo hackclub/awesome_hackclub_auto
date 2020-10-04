@@ -23,7 +23,9 @@ func HandleEvents(w http.ResponseWriter, r *http.Request) {
 
 	if !util.VerifySlackRequest(r, buf.Bytes()) {
 		logging.Log("invalid Slack request", "warning", false)
-		_, err = w.Write(nil)
+
+		w.WriteHeader(http.StatusBadRequest)
+		_, err = w.Write([]byte("Unsigned Slack request :("))
 		if err != nil {
 			logging.Log(err, "error", false)
 		}
