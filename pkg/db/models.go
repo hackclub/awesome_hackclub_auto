@@ -24,4 +24,5 @@ type ProjectFields struct {
 	Language    string        `json:"Language"`
 	Category    string        `json:"Category"`
 	Channel     string        `json:"Channel"`
+	Username    string        `json:"Username"`
 }

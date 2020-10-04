@@ -2,7 +2,6 @@ package gen
 
 import (
 	"fmt"
-	"strings"
 
 	"github.com/hackclub/awesome_hackclub_auto/pkg/db"
 )
@@ -26,9 +25,7 @@ func FormREADME(groupedProjects map[string][]db.Project) string {
 			body = fmt.Sprintf(
 				"%v- [%v](%v) - (%v) %v\n",
 				body,
-				strings.TrimPrefix(
-					"https://github.com/", strings.TrimPrefix("http://github.com/", project.Fields.GitHubURL),
-				),
+				fmt.Sprintf("%s/%s", project.Fields.Username, project.Fields.Name),
 				project.Fields.GitHubURL,
 				project.Fields.Language,
 				project.Fields.Description,

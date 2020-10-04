@@ -81,6 +81,7 @@ func GenerateProjectIntent(messageText string) db.ProjectFields {
 		return db.ProjectFields{
 			GitHubURL: re[0],
 			Name:      re[2],
+			Username:  re[1],
 		}
 	} else {
 		// There aren't any GitHub URLs in the message
