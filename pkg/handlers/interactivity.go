@@ -164,6 +164,11 @@ func HandleInteractivity(w http.ResponseWriter, r *http.Request) {
 
 			project := db.GetProject(metadata.ProjectID)
 
+			if project.Fields.Status != db.ProjectStatusIntent {
+				// Cancel if the project is already submitted
+				return
+			}
+
 			project.Fields.Status = db.ProjectStatusQueue
 
 			project.Fields.Description = values["description"]["description"].Value
