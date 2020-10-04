@@ -78,7 +78,6 @@ func GenerateProjectIntent(messageText string) db.ProjectFields {
 	re := regexp.MustCompile(`https?:\/\/github\.com\/([^\/>\|]+)\/([^\/>\|]+)`).FindStringSubmatch(messageText)
 
 	if re != nil {
-		// TODO: automatically pre-fill repo language and description
 		return db.ProjectFields{
 			GitHubURL: re[0],
 			Name:      re[2],
