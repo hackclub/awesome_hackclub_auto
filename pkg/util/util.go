@@ -86,8 +86,8 @@ func GenerateProjectIntent(messageText string) db.ProjectFields {
 		repoInfo := gh.RepoInfo(ghClient, owner, name)
 		return db.ProjectFields{
 			GitHubURL:   re[0],
-			Name:        owner,
-			Username:    name,
+			Name:        name,
+			Username:    owner,
 			Language:    *repoInfo.Language,
 			Description: *repoInfo.Description,
 		}
