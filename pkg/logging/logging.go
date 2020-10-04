@@ -12,6 +12,7 @@ import (
 func Log(v interface{}, level string, localOnly bool) {
 	// Only log to Honeybadger if an API key is set and it's an error
 	if os.Getenv("HONEYBADGER_API_KEY") != "" && !localOnly && (level == "error" || level == "critical" || level == "warning") {
+		logoru.Info("Logging an error to Honeybadger...")
 		_, err := honeybadger.Notify(fmt.Sprintf("%s: %v", strings.ToUpper(level), v))
 		if err != nil {
 			logoru.Error("Ironically enough, something went wrong while trying to log an error :(")
