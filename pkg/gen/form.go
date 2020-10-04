@@ -22,8 +22,11 @@ func FormREADME(groupedProjects map[string][]db.Project) string {
 	for category, projects := range groupedProjects {
 		body = fmt.Sprintf("%v\n## %v\n", body, category)
 		for _, project := range projects {
+			if project.Fields.Description != "" {
+				project.Fields.Description = "_" + project.Fields.Description + "_"
+			}
 			body = fmt.Sprintf(
-				"%v- [%v](%v)- [%[4]v](https://github.com/%[4]v) - (%v) %v\n",
+				"%v- **[%v](%v)** - [@%[4]v](https://github.com/%[4]v) - **(%v)** %v\n",
 				body,
 				project.Fields.Name,
 				project.Fields.GitHubURL,
