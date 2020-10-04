@@ -73,6 +73,16 @@ func SubmitModal(metadata string, project db.ProjectFields) slack.ModalViewReque
 					},
 				},
 				slack.InputBlock{
+					Type:    "input",
+					Label:   slack.NewTextBlockObject("plain_text", "Your GitHub username", false, false),
+					BlockID: "username",
+					Element: slack.PlainTextInputBlockElement{
+						Type:         "plain_text_input",
+						ActionID:     "username",
+						InitialValue: project.Username,
+					},
+				},
+				slack.InputBlock{
 					Optional: true,
 					Type:     "input",
 					Label:    slack.NewTextBlockObject("plain_text", "Project Description", false, false),
