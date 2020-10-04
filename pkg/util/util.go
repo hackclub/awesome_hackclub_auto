@@ -6,6 +6,7 @@ import (
 	"regexp"
 
 	"github.com/hackclub/awesome_hackclub_auto/pkg/db"
+	"github.com/hackclub/awesome_hackclub_auto/pkg/gh"
 	"github.com/hackclub/awesome_hackclub_auto/pkg/logging"
 	"github.com/slack-go/slack"
 )
@@ -78,10 +79,17 @@ func GenerateProjectIntent(messageText string) db.ProjectFields {
 	re := regexp.MustCompile(`https?:\/\/github\.com\/([^\/>\|]+)\/([^\/>\|]+)`).FindStringSubmatch(messageText)
 
 	if re != nil {
+		owner := re[1]
+		name := re[2]
+
+		ghClient := gh.Auth()
+		repoInfo := gh.RepoInfo(ghClient, owner, name)
 		return db.ProjectFields{
-			GitHubURL: re[0],
-			Name:      re[2],
-			Username:  re[1],
+			GitHubURL:   re[0],
+			Name:        name,
+			Username:    owner,
+			Language:    *repoInfo.Language,
+			Description: *repoInfo.Description,
 		}
 	} else {
 		// There aren't any GitHub URLs in the message
