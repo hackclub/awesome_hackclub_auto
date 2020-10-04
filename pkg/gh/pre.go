@@ -10,8 +10,8 @@ import (
 )
 
 type RepoMetaData struct {
-	Language    *string
-	Description *string
+	Language    string
+	Description string
 	Valid       bool
 }
 
@@ -26,15 +26,15 @@ func RepoInfo(client *github.Client, owner string, name string) RepoMetaData {
 	for _, lang := range config.Languages {
 		if lang == *repo.Language {
 			return RepoMetaData{
-				Language:    repo.Language,
-				Description: repo.Description,
+				Language:    *repo.Language,
+				Description: *repo.Description,
 				Valid:       *repo.Private,
 			}
 		}
 	}
 	logging.Log(*repo.Language+" isn't a supported language", "warning", false)
 	return RepoMetaData{
-		Description: repo.Description,
+		Description: *repo.Description,
 		Valid:       *repo.Private,
 	}
 }

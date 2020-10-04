@@ -92,8 +92,8 @@ func GenerateProjectIntent(messageText string) db.ProjectFields {
 			GitHubURL:   re[0],
 			Name:        name,
 			Username:    owner,
-			Language:    *repoInfo.Language,
-			Description: *repoInfo.Description,
+			Language:    repoInfo.Language,
+			Description: repoInfo.Description,
 		}
 	} else {
 		// There aren't any GitHub URLs in the message
