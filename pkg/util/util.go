@@ -84,6 +84,10 @@ func GenerateProjectIntent(messageText string) db.ProjectFields {
 
 		ghClient := gh.Auth()
 		repoInfo := gh.RepoInfo(ghClient, owner, name)
+		if !repoInfo.Valid {
+			// TODO SEND UNSUPPORTED REPO MESSAGE
+			fmt.Println("AHHHHHHH")
+		}
 		return db.ProjectFields{
 			GitHubURL:   re[0],
 			Name:        name,
