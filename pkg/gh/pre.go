@@ -19,7 +19,7 @@ type RepoMetaData struct {
 func RepoInfo(client *github.Client, owner string, name string) RepoMetaData {
 	repo, _, err := client.Repositories.Get(context.Background(), owner, name)
 	if err != nil {
-		logging.Log(fmt.Sprintf("Failed to get info from repo: %v", err), "warning", false)
+		logging.Log(fmt.Sprintf("Failed to get info from repo: %v", err), "warning", true)
 		return RepoMetaData{Valid: false}
 	}
 
@@ -31,7 +31,7 @@ func RepoInfo(client *github.Client, owner string, name string) RepoMetaData {
 				return RepoMetaData{
 					Language:    *repo.Language,
 					Description: *repo.Description,
-					Valid:       *repo.Private,
+					Valid:       !*repo.Private,
 				}
 			}
 		}
@@ -40,6 +40,6 @@ func RepoInfo(client *github.Client, owner string, name string) RepoMetaData {
 	logging.Log(*repo.Language+" isn't a supported language", "warning", false)
 	return RepoMetaData{
 		Description: *repo.Description,
-		Valid:       *repo.Private,
+		Valid:       !*repo.Private,
 	}
 }
