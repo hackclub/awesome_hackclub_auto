@@ -1,4 +1,4 @@
-<!-- DO NOT REMOVE - contributor_list:data:start:["cjdenio", "Matt-Gleich"]:end -->
+<!-- DO NOT REMOVE - contributor_list:data:start:["cjdenio", "Matt-Gleich", "sampoder"]:end -->
 
 # awesome_hackclub_auto
 
@@ -41,5 +41,7 @@ HONEYBADGER_API_KEY=honeybadger api key (not required)
 - **[@cjdenio](https://github.com/cjdenio)**
 
 - **[@Matt-Gleich](https://github.com/Matt-Gleich)**
+
+- **[@sampoder](https://github.com/sampoder)**
 
 <!-- DO NOT REMOVE - contributor_list:end -->
