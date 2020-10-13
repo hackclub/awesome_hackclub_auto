@@ -41,7 +41,7 @@ func RepoInfo(client *github.Client, owner string, name string) RepoMetaData {
 
 	metadata.Valid = !*repo.Private
 
-	if *repo.Description != "" {
+	if *repo.Description != "" && len(*repo.Description) <= 75 {
 		metadata.Description = *repo.Description
 	}
 

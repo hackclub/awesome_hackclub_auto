@@ -92,6 +92,7 @@ func SubmitModal(metadata string, project db.ProjectFields) slack.ModalViewReque
 						ActionID:     "description",
 						InitialValue: project.Description,
 						Multiline:    true,
+						MaxLength:    75,
 					},
 				},
 				slack.InputBlock{
