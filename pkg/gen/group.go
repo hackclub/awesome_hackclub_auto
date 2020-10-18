@@ -1,6 +1,10 @@
 package gen
 
-import "github.com/hackclub/awesome_hackclub_auto/pkg/db"
+import (
+	"sort"
+
+	"github.com/hackclub/awesome_hackclub_auto/pkg/db"
+)
 
 // Group projects based off category
 func GroupProjects(projects []db.Project) map[string][]db.Project {
@@ -9,5 +13,18 @@ func GroupProjects(projects []db.Project) map[string][]db.Project {
 		category := project.Fields.Category
 		groupedProjects[category] = append(groupedProjects[category], project)
 	}
-	return groupedProjects
+
+	// Sorting alphabetically based off the categories
+	sortedCategories := []string{}
+	for c := range groupedProjects {
+		sortedCategories = append(sortedCategories, c)
+	}
+	sort.Strings(sortedCategories)
+
+	sortedProjects := map[string][]db.Project{}
+	for _, c := range sortedCategories {
+		sortedProjects[c] = groupedProjects[c]
+	}
+
+	return sortedProjects
 }
