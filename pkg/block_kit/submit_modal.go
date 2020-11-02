@@ -83,10 +83,9 @@ func SubmitModal(metadata string, project db.ProjectFields) slack.ModalViewReque
 					},
 				},
 				slack.InputBlock{
-					Optional: true,
-					Type:     "input",
-					Label:    slack.NewTextBlockObject("plain_text", "Project Description", false, false),
-					BlockID:  "description",
+					Type:    "input",
+					Label:   slack.NewTextBlockObject("plain_text", "Project Description", false, false),
+					BlockID: "description",
 					Element: slack.PlainTextInputBlockElement{
 						Type:         "plain_text_input",
 						ActionID:     "description",
