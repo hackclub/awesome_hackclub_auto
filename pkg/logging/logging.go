@@ -8,7 +8,7 @@ import (
 
 	"crypto/rand"
 
-	"github.com/Matt-Gleich/logoru"
+	"github.com/gleich/logoru"
 	"github.com/honeybadger-io/honeybadger-go"
 )
 
